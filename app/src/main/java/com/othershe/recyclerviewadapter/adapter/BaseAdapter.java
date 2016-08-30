@@ -19,20 +19,23 @@ import java.util.List;
  * Time: 2016/8/29 09:46
  */
 public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public static final int ITEM_VIEW = 100001;
-    public static final int FOOTER_VIEW = 100002;
+    public static final int TYPE_COMMON_VIEW = 100001;//普通类型 Item
+    public static final int TYPE_FOOTER_VIEW = 100002;//footer类型 Item
+    public static final int TYPE_EMPTY_VIEW = 100003;//empty view，即初始化加载时的提示View
+    public static final int TYPE_DEFAULT_VIEW = 100004;//默认的Item，当数据为空时使用，防止只显示一个footer item、发生异常
 
     private OnLoadMoreListener mLoadMoreListener;
-    private OnItemClickListener<T> mItemClickListener;
+    private OnItemClickListeners<T> mItemClickListener;
 
     protected Context mContext;
     protected List<T> mDatas;
-    private boolean mOpenLoadMore;
+    private boolean mOpenLoadMore;//是否开启加载更多
 
     private View mLoadingView;
     private View mLoadFailedView;
     private View mLoadEndView;
-    private RelativeLayout mFooterLayout;
+    private View mEmptyView;
+    private RelativeLayout mFooterLayout;//footer view
 
     protected abstract void convert(ViewHolder holder, T data);
 
@@ -48,14 +51,20 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder viewHolder = null;
         switch (viewType) {
-            case ITEM_VIEW:
+            case TYPE_COMMON_VIEW:
                 viewHolder = ViewHolder.create(mContext, getItemLayoutId(), parent);
                 break;
-            case FOOTER_VIEW:
+            case TYPE_FOOTER_VIEW:
                 if (mFooterLayout == null) {
                     mFooterLayout = new RelativeLayout(mContext);
                 }
                 viewHolder = ViewHolder.create(mFooterLayout);
+                break;
+            case TYPE_EMPTY_VIEW:
+                viewHolder = ViewHolder.create(mEmptyView);
+                break;
+            case TYPE_DEFAULT_VIEW:
+                viewHolder = ViewHolder.create(new View(mContext));
                 break;
         }
         return viewHolder;
@@ -64,12 +73,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
-            case ITEM_VIEW:
+            case TYPE_COMMON_VIEW:
                 bindCommonItem(holder, position);
                 break;
         }
     }
-
 
     private void bindCommonItem(RecyclerView.ViewHolder holder, final int position) {
         final ViewHolder viewHolder = (ViewHolder) holder;
@@ -83,7 +91,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         });
     }
 
-
     @Override
     public int getItemCount() {
         return mDatas.size() + getFooterViewCount();
@@ -91,10 +98,32 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        if (isFooterView(position)) {
-            return FOOTER_VIEW;
+        if (mDatas.isEmpty() && mEmptyView != null) {
+            return TYPE_EMPTY_VIEW;
         }
-        return ITEM_VIEW;
+
+        if (isFooterView(position)) {
+            return TYPE_FOOTER_VIEW;
+        }
+
+        if (mDatas.isEmpty()) {
+            return TYPE_DEFAULT_VIEW;
+        }
+
+        return TYPE_COMMON_VIEW;
+    }
+
+    /**
+     * 根据positiond得到data
+     *
+     * @param position
+     * @return
+     */
+    public T getItem(int position) {
+        if (mDatas.isEmpty()) {
+            return null;
+        }
+        return mDatas.get(position);
     }
 
     /**
@@ -104,7 +133,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @return
      */
     private boolean isFooterView(int position) {
-        return mOpenLoadMore && position >= getItemCount() - 1;
+        return mOpenLoadMore && getItemCount() > 1 && position >= getItemCount() - 1;
     }
 
     /**
@@ -133,7 +162,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             final GridLayoutManager gridManager = ((GridLayoutManager) layoutManager);
             gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -169,7 +198,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (layoutManager instanceof LinearLayoutManager) {
                         int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-                        if (lastVisibleItemPosition > 0 && lastVisibleItemPosition + 1 == getItemCount()) {
+                        if (getItemCount() > 1 && lastVisibleItemPosition + 1 == getItemCount()) {
                             scrollLoadMore();
                         }
                     } else if (layoutManager instanceof StaggeredGridLayoutManager) {
@@ -178,40 +207,26 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
                             scrollLoadMore();
                         }
                     }
-
-                    Log.e("tag", "onScrollStateChanged");
                 }
-
-
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (layoutManager instanceof LinearLayoutManager) {
-                    int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-                    if (lastVisibleItemPosition > 0 && lastVisibleItemPosition + 1 == getItemCount()) {
-                        scrollLoadMore();
-                        Log.e("tag", "onScrolled");
-                    }
-                } else if (layoutManager instanceof StaggeredGridLayoutManager) {
-                    int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(null);
-                    if (getItemCount() > 1 && findMax(lastVisibleItemPositions) + 1 == getItemCount()) {
-                        scrollLoadMore();
-                    }
-                }
-
-
             }
         });
     }
 
+    /**
+     * 到达底部开始刷新
+     */
     private void scrollLoadMore() {
         if (mFooterLayout.getChildAt(0) == mLoadingView) {
-            mLoadMoreListener.onLoadMore();
+            mLoadMoreListener.onLoadMore(false);
         }
     }
 
+    /**
+     * StaggeredGridLayoutManager时，查找position最大的列
+     *
+     * @param lastVisiblePositions
+     * @return
+     */
     private int findMax(int[] lastVisiblePositions) {
         int max = lastVisiblePositions[0];
         for (int value : lastVisiblePositions) {
@@ -222,10 +237,18 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         return max;
     }
 
+    /**
+     * 清空footer view
+     */
     private void removeFooterView() {
         mFooterLayout.removeAllViews();
     }
 
+    /**
+     * 添加新的footer view
+     *
+     * @param footerView
+     */
     private void addFooterView(View footerView) {
         if (footerView == null) {
             return;
@@ -240,15 +263,36 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         mFooterLayout.addView(footerView, params);
     }
 
+    /**
+     * 刷新加载更多的数据
+     *
+     * @param datas
+     */
     public void setLoadMoreData(List<T> datas) {
         int size = mDatas.size();
         mDatas.addAll(datas);
         notifyItemInserted(size);
     }
 
+    /**
+     * 下拉刷新，得到的新数据查到原数据起始
+     *
+     * @param datas
+     */
     public void setData(List<T> datas) {
         mDatas.addAll(0, datas);
-        notifyItemRangeInserted(0, datas.size());
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 初次加载、或下拉刷新要替换全部旧数据时刷新数据
+     *
+     * @param datas
+     */
+    public void setNewData(List<T> datas) {
+        mDatas.clear();
+        mDatas.addAll(datas);
+        notifyDataSetChanged();
     }
 
     /**
@@ -280,7 +324,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             @Override
             public void onClick(View view) {
                 addFooterView(mLoadingView);
-                mLoadMoreListener.onLoadMore();
+                mLoadMoreListener.onLoadMore(true);
             }
         });
     }
@@ -303,6 +347,20 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         setLoadEndView(inflate(loadEndId));
     }
 
+    /**
+     * 初始化emptyView
+     *
+     * @param emptyView
+     */
+    public void setEmptyView(View emptyView) {
+        mEmptyView = emptyView;
+    }
+
+    /**
+     * 返回 footer view数量
+     *
+     * @return
+     */
     public int getFooterViewCount() {
         return mOpenLoadMore ? 1 : 0;
     }
@@ -312,7 +370,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         mLoadMoreListener = loadMoreListener;
     }
 
-    public void setOnItemClickListener(OnItemClickListener<T> itemClickListener) {
+    public void setOnItemClickListener(OnItemClickListeners<T> itemClickListener) {
         mItemClickListener = itemClickListener;
     }
 
