@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < 10; i++) {
                     data.add("item--" + i);
                 }
+                //刷新数据
                 mAdapter.setNewData(data);
             }
         }, 3000);

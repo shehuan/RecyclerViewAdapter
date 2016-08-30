@@ -56,15 +56,18 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         return mConvertView;
     }
 
-    public ViewHolder setText(int viewId, String text) {
+    public void setText(int viewId, String text) {
         TextView textView = getView(viewId);
         textView.setText(text);
-        return this;
     }
 
-    public ViewHolder setBgRes(int viewId, int resId) {
+    public void setOnClickListener(int viewId, View.OnClickListener clickListener) {
+        View view = getView(viewId);
+        view.setOnClickListener(clickListener);
+    }
+
+    public void setBgRes(int viewId, int resId) {
         View view = getView(viewId);
         view.setBackgroundResource(resId);
-        return this;
     }
 }

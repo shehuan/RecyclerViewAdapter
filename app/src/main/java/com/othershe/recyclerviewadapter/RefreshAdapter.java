@@ -1,6 +1,8 @@
 package com.othershe.recyclerviewadapter;
 
 import android.content.Context;
+import android.view.View;
+import android.widget.Toast;
 
 import com.othershe.recyclerviewadapter.adapter.BaseAdapter;
 import com.othershe.recyclerviewadapter.adapter.ViewHolder;
@@ -18,8 +20,14 @@ public class RefreshAdapter extends BaseAdapter<String> {
     }
 
     @Override
-    protected void convert(ViewHolder holder, String data) {
+    protected void convert(ViewHolder holder, final String data) {
         holder.setText(R.id.item_title, data);
+        holder.setOnClickListener(R.id.item_btn, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext, "我是" + data + "的button", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
