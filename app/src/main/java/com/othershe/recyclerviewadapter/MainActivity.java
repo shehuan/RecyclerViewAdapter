@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.othershe.recyclerviewadapter.adapter.OnItemClickListeners;
-import com.othershe.recyclerviewadapter.adapter.OnLoadMoreListener;
-import com.othershe.recyclerviewadapter.adapter.ViewHolder;
+import com.othershe.baseadapter.OnItemClickListeners;
+import com.othershe.baseadapter.OnLoadMoreListener;
+import com.othershe.baseadapter.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

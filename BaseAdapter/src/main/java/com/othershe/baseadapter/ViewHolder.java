@@ -1,4 +1,4 @@
-package com.othershe.recyclerviewadapter.adapter;
+package com.othershe.baseadapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

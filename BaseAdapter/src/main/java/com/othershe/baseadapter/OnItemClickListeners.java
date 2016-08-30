@@ -1,4 +1,4 @@
-package com.othershe.recyclerviewadapter.adapter;
+package com.othershe.baseadapter;
 
 /**
  * Author: Othershe

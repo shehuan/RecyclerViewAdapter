@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
-import com.othershe.recyclerviewadapter.adapter.BaseAdapter;
-import com.othershe.recyclerviewadapter.adapter.ViewHolder;
+import com.othershe.baseadapter.BaseAdapter;
+import com.othershe.baseadapter.ViewHolder;
 
 import java.util.List;
 
