@@ -9,6 +9,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
-        android:text="加载失败，点我在试试？" />
+        android:text="加载失败，点我再试试？" />
 
 </LinearLayout>

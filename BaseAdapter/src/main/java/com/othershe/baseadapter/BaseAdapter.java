@@ -5,6 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     protected Context mContext;
     protected List<T> mDatas;
     private boolean mOpenLoadMore;//是否开启加载更多
+    private boolean isAutoLoadMore = true;//是否自动加载，当数据不满一屏幕会自动加载
 
     private View mLoadingView;
     private View mLoadFailedView;
@@ -161,7 +163,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             final GridLayoutManager gridManager = ((GridLayoutManager) layoutManager);
             gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -174,7 +176,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
                 }
             });
         }
-
         startLoadMore(recyclerView, layoutManager);
     }
 
@@ -195,17 +196,19 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (layoutManager instanceof LinearLayoutManager) {
-                        int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-                        if (getItemCount() > 1 && lastVisibleItemPosition + 1 == getItemCount()) {
-                            scrollLoadMore();
-                        }
-                    } else if (layoutManager instanceof StaggeredGridLayoutManager) {
-                        int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(null);
-                        if (getItemCount() > 1 && findMax(lastVisibleItemPositions) + 1 == getItemCount()) {
-                            scrollLoadMore();
-                        }
+                    if (!isAutoLoadMore && findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
+                        scrollLoadMore();
                     }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (isAutoLoadMore && findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
+                    scrollLoadMore();
+                }else{
+                  isAutoLoadMore = false;
                 }
             }
         });
@@ -218,6 +221,16 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (mFooterLayout.getChildAt(0) == mLoadingView) {
             mLoadMoreListener.onLoadMore(false);
         }
+    }
+
+    private int findLastVisibleItemPosition(RecyclerView.LayoutManager layoutManager) {
+        if (layoutManager instanceof LinearLayoutManager) {
+            return ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+            int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(null);
+            return findMax(lastVisibleItemPositions);
+        }
+        return -1;
     }
 
     /**

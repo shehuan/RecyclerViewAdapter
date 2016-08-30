@@ -86,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                if (mAdapter.getItemCount() > 15 && isFailed) {
+                if (mAdapter.getItemCount() > 19 && isFailed) {
                     isFailed = false;
                     //加载失败，更新footer view提示
                     mAdapter.setLoadFailedView(R.layout.load_failed_layout);
-                } else if (mAdapter.getItemCount() > 19) {
+                } else if (mAdapter.getItemCount() > 23) {
                     //加载完成，更新footer view提示
                     mAdapter.setLoadEndView(R.layout.load_end_layout);
                 } else {
