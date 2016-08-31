@@ -5,7 +5,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -207,8 +206,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
                 super.onScrolled(recyclerView, dx, dy);
                 if (isAutoLoadMore && findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
                     scrollLoadMore();
-                }else{
-                  isAutoLoadMore = false;
+                } else if (isAutoLoadMore) {
+                    isAutoLoadMore = false;
                 }
             }
         });

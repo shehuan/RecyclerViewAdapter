@@ -17,7 +17,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     private View mConvertView;
 
     /**
-     * 构造方法
+     * 私有构造方法
      *
      * @param itemView
      */
@@ -61,6 +61,11 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         textView.setText(text);
     }
 
+    public void setText(int viewId, int textId) {
+        TextView textView = getView(viewId);
+        textView.setText(textId);
+    }
+
     public void setOnClickListener(int viewId, View.OnClickListener clickListener) {
         View view = getView(viewId);
         view.setOnClickListener(clickListener);
@@ -69,5 +74,10 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     public void setBgRes(int viewId, int resId) {
         View view = getView(viewId);
         view.setBackgroundResource(resId);
+    }
+
+    public void setBgColor(int viewId, int colorId) {
+        View view = getView(viewId);
+        view.setBackgroundColor(colorId);
     }
 }

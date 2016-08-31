@@ -6,7 +6,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 10
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -39,7 +39,7 @@ publish {
     userOrg = 'othershe'
     groupId = 'com.othershe'
     artifactId = 'BaseAdapter'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'A RecyclerView Adapter that support load more'
     website = 'https://github.com/Othershe/RecyclerViewAdapter'
 }
