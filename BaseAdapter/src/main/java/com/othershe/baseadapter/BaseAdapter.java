@@ -5,7 +5,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -21,7 +20,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public static final int TYPE_COMMON_VIEW = 100001;//普通类型 Item
     public static final int TYPE_FOOTER_VIEW = 100002;//footer类型 Item
     public static final int TYPE_EMPTY_VIEW = 100003;//empty view，即初始化加载时的提示View
-    public static final int TYPE_DEFAULT_VIEW = 100004;//默认的Item，当数据为空时使用，防止只显示一个footer item、发生异常
 
     private OnLoadMoreListener mLoadMoreListener;
     private OnItemClickListeners<T> mItemClickListener;
@@ -63,9 +61,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             case TYPE_EMPTY_VIEW:
                 viewHolder = ViewHolder.create(mEmptyView);
                 break;
-            case TYPE_DEFAULT_VIEW:
-                viewHolder = ViewHolder.create(new View(mContext));
-                break;
         }
         return viewHolder;
     }
@@ -93,6 +88,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
+        if (mDatas.isEmpty() && mEmptyView != null) {
+            return 1;
+        }
         return mDatas.size() + getFooterViewCount();
     }
 
@@ -104,10 +102,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
         if (isFooterView(position)) {
             return TYPE_FOOTER_VIEW;
-        }
-
-        if (mDatas.isEmpty()) {
-            return TYPE_DEFAULT_VIEW;
         }
 
         return TYPE_COMMON_VIEW;
@@ -133,7 +127,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @return
      */
     private boolean isFooterView(int position) {
-        return mOpenLoadMore && getItemCount() > 1 && position >= getItemCount() - 1;
+        return mOpenLoadMore && position >= getItemCount() - 1;
     }
 
     /**
@@ -227,25 +221,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             return ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(null);
-            return findMax(lastVisibleItemPositions);
+            return Util.findMax(lastVisibleItemPositions);
         }
         return -1;
-    }
-
-    /**
-     * StaggeredGridLayoutManager时，查找position最大的列
-     *
-     * @param lastVisiblePositions
-     * @return
-     */
-    private int findMax(int[] lastVisiblePositions) {
-        int max = lastVisiblePositions[0];
-        for (int value : lastVisiblePositions) {
-            if (value > max) {
-                max = value;
-            }
-        }
-        return max;
     }
 
     /**
@@ -317,7 +295,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void setLoadingView(int loadingId) {
-        setLoadingView(inflate(loadingId));
+        setLoadingView(Util.inflate(mContext, loadingId));
     }
 
     /**
@@ -341,7 +319,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void setLoadFailedView(int loadFailedId) {
-        setLoadFailedView(inflate(loadFailedId));
+        setLoadFailedView(Util.inflate(mContext, loadFailedId));
     }
 
     /**
@@ -355,7 +333,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void setLoadEndView(int loadEndId) {
-        setLoadEndView(inflate(loadEndId));
+        setLoadEndView(Util.inflate(mContext, loadEndId));
     }
 
     /**
@@ -373,7 +351,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @return
      */
     public int getFooterViewCount() {
-        return mOpenLoadMore ? 1 : 0;
+        return mOpenLoadMore && !mDatas.isEmpty() ? 1 : 0;
     }
 
 
@@ -383,12 +361,5 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     public void setOnItemClickListener(OnItemClickListeners<T> itemClickListener) {
         mItemClickListener = itemClickListener;
-    }
-
-    private View inflate(int layoutId) {
-        if (layoutId <= 0) {
-            return null;
-        }
-        return LayoutInflater.from(mContext).inflate(layoutId, null);
     }
 }
