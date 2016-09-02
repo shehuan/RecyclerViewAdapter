@@ -3,7 +3,7 @@
 ##简介
 一个支持RecyclerView加载更多的BaseAdapter
 
-[原理、效果]()
+[原理、效果](http://www.jianshu.com/p/66c065874848)
 
 [demo下载](http://fir.im/k7dl)
 
