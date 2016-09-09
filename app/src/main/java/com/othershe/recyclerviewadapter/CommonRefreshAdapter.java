@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
-import com.othershe.baseadapter.BaseAdapter;
+import com.othershe.baseadapter.base.CommonBaseAdapter;
 import com.othershe.baseadapter.ViewHolder;
 
 import java.util.List;
@@ -13,9 +13,9 @@ import java.util.List;
  * Author: Othershe
  * Time: 2016/8/29 15:40
  */
-public class RefreshAdapter extends BaseAdapter<String> {
+public class CommonRefreshAdapter extends CommonBaseAdapter<String> {
 
-    public RefreshAdapter(Context context, List<String> datas, boolean isLoadMore) {
+    public CommonRefreshAdapter(Context context, List<String> datas, boolean isLoadMore) {
         super(context, datas, isLoadMore);
     }
 

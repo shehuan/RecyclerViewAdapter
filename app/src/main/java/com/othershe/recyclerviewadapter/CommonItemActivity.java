@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.othershe.baseadapter.OnItemClickListeners;
-import com.othershe.baseadapter.OnLoadMoreListener;
+import com.othershe.baseadapter.interfaces.OnItemClickListeners;
+import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
 import com.othershe.baseadapter.ViewHolder;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CommonItemActivity extends AppCompatActivity {
 
-    private RefreshAdapter mAdapter;
+    private CommonRefreshAdapter mAdapter;
 
     private RecyclerView mRecyclerView;
 
@@ -32,7 +32,7 @@ public class CommonItemActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
 
         //初始化adapter
-        mAdapter = new RefreshAdapter(this, null, true);
+        mAdapter = new CommonRefreshAdapter(this, null, true);
 
         //初始化EmptyView
         View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);

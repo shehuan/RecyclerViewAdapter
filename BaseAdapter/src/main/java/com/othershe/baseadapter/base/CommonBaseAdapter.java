@@ -1,9 +1,12 @@
-package com.othershe.baseadapter;
+package com.othershe.baseadapter.base;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.othershe.baseadapter.ViewHolder;
+import com.othershe.baseadapter.interfaces.OnItemClickListeners;
 
 import java.util.List;
 
@@ -11,10 +14,10 @@ import java.util.List;
  * Author: Othershe
  * Time: 2016/9/9 15:52
  */
-public abstract class BaseAdapter<T> extends LBaseAdapter<T> {
+public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
     protected OnItemClickListeners<T> mItemClickListener;
 
-    public BaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
+    public CommonBaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
         super(context, datas, isOpenLoadMore);
     }
 

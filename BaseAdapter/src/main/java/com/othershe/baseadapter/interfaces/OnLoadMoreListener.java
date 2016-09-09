@@ -1,4 +1,4 @@
-package com.othershe.baseadapter;
+package com.othershe.baseadapter.interfaces;
 
 /**
  * Author: Othershe

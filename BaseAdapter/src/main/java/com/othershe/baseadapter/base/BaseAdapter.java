@@ -1,4 +1,4 @@
-package com.othershe.baseadapter;
+package com.othershe.baseadapter.base;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.othershe.baseadapter.Util;
+import com.othershe.baseadapter.ViewHolder;
+import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +20,7 @@ import java.util.List;
  * Author: Othershe
  * Time: 2016/8/29 09:46
  */
-public abstract class LBaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_COMMON_VIEW = 100001;//普通类型 Item
     public static final int TYPE_FOOTER_VIEW = 100002;//footer类型 Item
     public static final int TYPE_EMPTY_VIEW = 100003;//empty view，即初始化加载时的提示View
@@ -36,7 +40,7 @@ public abstract class LBaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.
 
     protected abstract int getViewType(int position, T data);
 
-    public LBaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
+    public BaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
         mContext = context;
         mDatas = datas == null ? new ArrayList<T>() : datas;
         mOpenLoadMore = isOpenLoadMore;

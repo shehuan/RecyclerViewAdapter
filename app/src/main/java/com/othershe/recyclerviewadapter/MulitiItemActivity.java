@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.othershe.baseadapter.OnLoadMoreListener;
-import com.othershe.baseadapter.OnMultiItemClickListeners;
+import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
+import com.othershe.baseadapter.interfaces.OnMultiItemClickListeners;
 import com.othershe.baseadapter.ViewHolder;
 
 import java.util.ArrayList;

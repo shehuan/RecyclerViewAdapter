@@ -1,4 +1,6 @@
-package com.othershe.baseadapter;
+package com.othershe.baseadapter.interfaces;
+
+import com.othershe.baseadapter.ViewHolder;
 
 /**
  * Author: Othershe

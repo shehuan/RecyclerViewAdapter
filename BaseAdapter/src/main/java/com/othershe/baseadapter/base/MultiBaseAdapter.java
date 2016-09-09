@@ -1,9 +1,12 @@
-package com.othershe.baseadapter;
+package com.othershe.baseadapter.base;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.othershe.baseadapter.ViewHolder;
+import com.othershe.baseadapter.interfaces.OnMultiItemClickListeners;
 
 import java.util.List;
 
@@ -11,7 +14,7 @@ import java.util.List;
  * Author: Othershe
  * Time: 2016/9/9 16:21
  */
-public abstract class MultiBaseAdapter<T> extends LBaseAdapter<T> {
+public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
     private OnMultiItemClickListeners<T> mItemClickListener;
 
     public MultiBaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {

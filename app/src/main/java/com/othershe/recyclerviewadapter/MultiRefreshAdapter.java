@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
-import com.othershe.baseadapter.MultiBaseAdapter;
+import com.othershe.baseadapter.base.MultiBaseAdapter;
 import com.othershe.baseadapter.ViewHolder;
 
 import java.util.List;
