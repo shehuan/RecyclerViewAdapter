@@ -93,7 +93,7 @@ public class MulitiItemActivity extends AppCompatActivity {
                     mAdapter.setLoadEndView(R.layout.load_end_layout);
                 } else {
                     final List<String> data = new ArrayList<>();
-                    for (int i = 0; i < 2; i++) {
+                    for (int i = 0; i < 12; i++) {
                         data.add("item--" + (mAdapter.getItemCount() + i - 1));
                     }
                     //刷新数据
