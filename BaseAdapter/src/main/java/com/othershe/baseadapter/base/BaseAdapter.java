@@ -193,7 +193,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      */
     private void scrollLoadMore() {
         if (mFooterLayout.getChildAt(0) == mLoadingView) {
-            mLoadMoreListener.onLoadMore(false);
+            if (mLoadMoreListener != null) {
+                mLoadMoreListener.onLoadMore(false);
+            }
         }
     }
 
@@ -294,7 +296,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             @Override
             public void onClick(View view) {
                 addFooterView(mLoadingView);
-                mLoadMoreListener.onLoadMore(true);
+                if (mLoadMoreListener != null) {
+                    mLoadMoreListener.onLoadMore(true);
+                }
             }
         });
     }

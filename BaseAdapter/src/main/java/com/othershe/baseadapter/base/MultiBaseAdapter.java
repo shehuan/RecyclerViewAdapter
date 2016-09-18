@@ -48,7 +48,9 @@ public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
         viewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mItemClickListener.onItemClick(viewHolder, mDatas.get(position), position, viewType);
+                if (mItemClickListener != null){
+                    mItemClickListener.onItemClick(viewHolder, mDatas.get(position), position, viewType);
+                }
             }
         });
     }

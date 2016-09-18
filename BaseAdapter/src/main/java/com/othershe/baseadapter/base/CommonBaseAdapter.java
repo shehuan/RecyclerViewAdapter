@@ -48,7 +48,9 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
         viewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mItemClickListener.onItemClick(viewHolder, mDatas.get(position), position);
+                if (mItemClickListener != null){
+                    mItemClickListener.onItemClick(viewHolder, mDatas.get(position), position);
+                }
             }
         });
     }
