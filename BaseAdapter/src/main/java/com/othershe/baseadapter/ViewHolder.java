@@ -56,6 +56,14 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         return mConvertView;
     }
 
+    public View getSwipeView() {
+        ViewGroup itemLayout = ((ViewGroup) mConvertView);
+        if (itemLayout.getChildCount() == 2) {
+            return itemLayout.getChildAt(1);
+        }
+        return null;
+    }
+
     public void setText(int viewId, String text) {
         TextView textView = getView(viewId);
         textView.setText(text);

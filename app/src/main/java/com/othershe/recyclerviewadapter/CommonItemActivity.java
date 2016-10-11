@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.othershe.baseadapter.interfaces.OnItemClickListeners;
+import com.othershe.baseadapter.interfaces.OnItemClickListener;
 import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
 import com.othershe.baseadapter.ViewHolder;
 
@@ -50,7 +50,7 @@ public class CommonItemActivity extends AppCompatActivity {
         });
 
         //设置item点击事件监听
-        mAdapter.setOnItemClickListener(new OnItemClickListeners<String>() {
+        mAdapter.setOnItemClickListener(new OnItemClickListener<String>() {
 
             @Override
             public void onItemClick(ViewHolder viewHolder, String data, int position) {

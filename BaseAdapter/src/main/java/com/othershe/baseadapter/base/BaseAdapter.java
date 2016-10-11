@@ -267,6 +267,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
+    public void remove(int position) {
+        mDatas.remove(position);
+        notifyDataSetChanged();
+    }
+
     /**
      * 初始化加载中布局
      *
