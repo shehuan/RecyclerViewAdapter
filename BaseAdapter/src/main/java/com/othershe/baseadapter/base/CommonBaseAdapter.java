@@ -60,7 +60,7 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
             }
         });
 
-        if (viewHolder.getSwipeView() != null) {
+        if (mViewId.size() > 0 && mListener.size() > 0 && viewHolder.getSwipeView() != null) {
             ViewGroup swipeView = (ViewGroup) viewHolder.getSwipeView();
 
             for (int i = 0; i < mViewId.size(); i++) {
