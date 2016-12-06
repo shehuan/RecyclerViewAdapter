@@ -24,7 +24,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public static final int TYPE_COMMON_VIEW = 100001;//普通类型 Item
     public static final int TYPE_FOOTER_VIEW = 100002;//footer类型 Item
     public static final int TYPE_EMPTY_VIEW = 100003;//empty view，即初始化加载时的提示View
-    public static final int TYPE_NODATE_VIEW = 100004;//初次加载无数据的空白view（可能是加载失败）
+    public static final int TYPE_NODATE_VIEW = 100004;//初次加载无数据的默认空白view
+    public static final int TYPE_RELOAD_VIEW = 100005;//初次加载无数据的可重新加载或提示用户的view
 
     private OnLoadMoreListener mLoadMoreListener;
 
@@ -35,10 +36,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     private boolean isRemoveEmptyView;
 
-    private View mLoadingView;
-    private View mLoadFailedView;
-    private View mLoadEndView;
-    private View mEmptyView;
+    private View mLoadingView; //分页加载中view
+    private View mLoadFailedView; //分页加载失败view
+    private View mLoadEndView; //分页加载结束view
+    private View mEmptyView; //首次预加载view
+    private View mReloadView; //首次预加载失败、或无数据的view
     private RelativeLayout mFooterLayout;//footer view
 
     protected abstract int getViewType(int position, T data);
@@ -65,6 +67,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             case TYPE_NODATE_VIEW:
                 viewHolder = ViewHolder.create(new View(mContext));
                 break;
+            case TYPE_RELOAD_VIEW:
+                viewHolder = ViewHolder.create(mReloadView);
+                break;
         }
         return viewHolder;
     }
@@ -79,12 +84,16 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        if (mDatas.isEmpty() && mEmptyView != null && !isRemoveEmptyView) {
-            return TYPE_EMPTY_VIEW;
-        }
+        if (mDatas.isEmpty()) {
+            if (mEmptyView != null && !isRemoveEmptyView) {
+                return TYPE_EMPTY_VIEW;
+            }
 
-        if (mDatas.isEmpty() && isRemoveEmptyView) {
-            return TYPE_NODATE_VIEW;
+            if (isRemoveEmptyView && mReloadView != null) {
+                return TYPE_RELOAD_VIEW;
+            } else {
+                return TYPE_NODATE_VIEW;
+            }
         }
 
         if (isFooterView(position)) {
@@ -118,7 +127,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     protected boolean isCommonItemView(int viewType) {
-        return viewType != TYPE_EMPTY_VIEW && viewType != TYPE_FOOTER_VIEW && viewType != TYPE_NODATE_VIEW;
+        return viewType != TYPE_EMPTY_VIEW && viewType != TYPE_FOOTER_VIEW
+                && viewType != TYPE_NODATE_VIEW && viewType != TYPE_RELOAD_VIEW;
     }
 
     /**
@@ -345,7 +355,21 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         mEmptyView = emptyView;
     }
 
+    /**
+     * 移除emptyView
+     */
     public void removeEmptyView() {
+        isRemoveEmptyView = true;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 初次预加载失败、或无数据可显示该view，进行重新加载或提示用户无数据
+     *
+     * @param reloadView
+     */
+    public void setReloadView(View reloadView) {
+        mReloadView = reloadView;
         isRemoveEmptyView = true;
         notifyDataSetChanged();
     }
@@ -358,7 +382,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public int getFooterViewCount() {
         return mOpenLoadMore && !mDatas.isEmpty() ? 1 : 0;
     }
-
 
     public void setOnLoadMoreListener(OnLoadMoreListener loadMoreListener) {
         mLoadMoreListener = loadMoreListener;

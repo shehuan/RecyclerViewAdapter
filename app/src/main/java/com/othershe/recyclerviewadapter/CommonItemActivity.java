@@ -75,7 +75,6 @@ public class CommonItemActivity extends AppCompatActivity {
                 }
                 //刷新数据
                 mAdapter.setNewData(data);
-//                mAdapter.removeEmptyView();
             }
         }, 3000);
     }

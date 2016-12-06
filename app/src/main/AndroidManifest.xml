@@ -18,6 +18,7 @@
 
         <activity android:name=".CommonItemActivity" />
         <activity android:name=".MulitiItemActivity" />
+        <activity android:name=".InitLoadActivity" />
     </application>
 
 </manifest>
