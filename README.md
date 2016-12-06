@@ -83,11 +83,12 @@ mAdapter.setEmptyView(emptyView);
 ```java
 mAdapter.removeEmptyView();
 ```
-3.3、显示首次预加载无数据或失败的view, (3.2和3.3任选其一即可)
+3.3、显示首次预加载无数据或失败的view,以便重新加载或提示用户
 ```java
 View reloadLayout = LayoutInflater.from(this).inflate(R.layout.reload_layout, (ViewGroup) mRecyclerView.getParent(), false);
 mAdapter.setReloadView(reloadLayout);
 ```
+PS:3.2和3.3任选其一即可
 
 ####4、初始化加载中、加载失败、加载完成的Footer View布局
 ```java
