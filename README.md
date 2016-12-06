@@ -10,7 +10,7 @@
 ##导入
 ```java
 dependencies {
-    compile 'com.othershe:BaseAdapter:1.0.4'
+    compile 'com.othershe:BaseAdapter:1.1.0'
 }
 ```
 
@@ -73,10 +73,20 @@ MultiRefreshAdapter mAdapter = new MultiRefreshAdapter(this, data, true);
 
 PS：true代表是否开启加载更多，否则不开启。
 
-####3、初始化EmptyView
+####3
+3.1、初始化EmptyView
 ```java
 View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);
 mAdapter.setEmptyView(emptyView);
+```
+3.2、直接移除EmptyView
+```java
+mAdapter.removeEmptyView();
+```
+3.3、显示首次预加载无数据或失败的view, (3.2和3.3任选其一即可)
+```java
+View reloadLayout = LayoutInflater.from(this).inflate(R.layout.reload_layout, (ViewGroup) mRecyclerView.getParent(), false);
+mAdapter.setReloadView(reloadLayout);
 ```
 
 ####4、初始化加载中、加载失败、加载完成的Footer View布局
