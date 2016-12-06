@@ -24,6 +24,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public static final int TYPE_COMMON_VIEW = 100001;//普通类型 Item
     public static final int TYPE_FOOTER_VIEW = 100002;//footer类型 Item
     public static final int TYPE_EMPTY_VIEW = 100003;//empty view，即初始化加载时的提示View
+    public static final int TYPE_NODATE_VIEW = 100004;//初次加载无数据的空白view（可能是加载失败）
 
     private OnLoadMoreListener mLoadMoreListener;
 
@@ -31,6 +32,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     protected List<T> mDatas;
     private boolean mOpenLoadMore;//是否开启加载更多
     private boolean isAutoLoadMore = true;//是否自动加载，当数据不满一屏幕会自动加载
+
+    private boolean isRemoveEmptyView;
 
     private View mLoadingView;
     private View mLoadFailedView;
@@ -59,6 +62,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             case TYPE_EMPTY_VIEW:
                 viewHolder = ViewHolder.create(mEmptyView);
                 break;
+            case TYPE_NODATE_VIEW:
+                viewHolder = ViewHolder.create(new View(mContext));
+                break;
         }
         return viewHolder;
     }
@@ -73,8 +79,12 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        if (mDatas.isEmpty() && mEmptyView != null) {
+        if (mDatas.isEmpty() && mEmptyView != null && !isRemoveEmptyView) {
             return TYPE_EMPTY_VIEW;
+        }
+
+        if (mDatas.isEmpty() && isRemoveEmptyView) {
+            return TYPE_NODATE_VIEW;
         }
 
         if (isFooterView(position)) {
@@ -108,7 +118,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     protected boolean isCommonItemView(int viewType) {
-        return viewType != TYPE_EMPTY_VIEW && viewType != TYPE_FOOTER_VIEW;
+        return viewType != TYPE_EMPTY_VIEW && viewType != TYPE_FOOTER_VIEW && viewType != TYPE_NODATE_VIEW;
     }
 
     /**
@@ -333,6 +343,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      */
     public void setEmptyView(View emptyView) {
         mEmptyView = emptyView;
+    }
+
+    public void removeEmptyView() {
+        isRemoveEmptyView = true;
+        notifyDataSetChanged();
     }
 
     /**
