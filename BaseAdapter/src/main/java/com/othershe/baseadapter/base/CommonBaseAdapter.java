@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.othershe.baseadapter.ViewHolder;
+import com.othershe.baseadapter.interfaces.OnItemChildClickListener;
 import com.othershe.baseadapter.interfaces.OnItemClickListener;
 import com.othershe.baseadapter.interfaces.OnSwipeMenuClickListener;
 
@@ -22,6 +23,9 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
 
     protected ArrayList<Integer> mViewId = new ArrayList<>();
     protected ArrayList<OnSwipeMenuClickListener<T>> mListener = new ArrayList<>();
+
+    private ArrayList<Integer> mItemChildIds = new ArrayList<>();
+    protected ArrayList<OnItemChildClickListener<T>> mItemChildListeners = new ArrayList<>();
 
     public CommonBaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
         super(context, datas, isOpenLoadMore);
@@ -60,6 +64,18 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
             }
         });
 
+        for (int i = 0; i < mItemChildIds.size(); i++) {
+            final int tempI = i;
+            if (viewHolder.getConvertView().findViewById(mItemChildIds.get(i)) != null) {
+                viewHolder.getConvertView().findViewById(mItemChildIds.get(i)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mItemChildListeners.get(tempI).onItemChildClick(viewHolder, mDatas.get(position), position);
+                    }
+                });
+            }
+        }
+
         if (mViewId.size() > 0 && mListener.size() > 0 && viewHolder.getSwipeView() != null) {
             ViewGroup swipeView = (ViewGroup) viewHolder.getSwipeView();
 
@@ -87,6 +103,11 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
     public void setOnSwipMenuClickListener(int viewId, OnSwipeMenuClickListener<T> swipeMenuClickListener) {
         mViewId.add(viewId);
         mListener.add(swipeMenuClickListener);
+    }
+
+    public void setOnItemChildClickListener(int viewId, OnItemChildClickListener<T> itemChildClickListener) {
+        mItemChildIds.add(viewId);
+        mItemChildListeners.add(itemChildClickListener);
     }
 
 }
