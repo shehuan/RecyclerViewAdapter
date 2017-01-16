@@ -74,6 +74,11 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         textView.setText(textId);
     }
 
+    public void setTextColor(int viewId, int colorId) {
+        TextView textView = getView(viewId);
+        textView.setTextColor(colorId);
+    }
+
     public void setOnClickListener(int viewId, View.OnClickListener clickListener) {
         View view = getView(viewId);
         view.setOnClickListener(clickListener);
