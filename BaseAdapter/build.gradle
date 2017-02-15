@@ -39,7 +39,7 @@ publish {
     userOrg = 'othershe'
     groupId = 'com.othershe'
     artifactId = 'BaseAdapter'
-    publishVersion = '1.1.1'
+    publishVersion = '1.1.3'
     desc = 'A RecyclerView Adapter that support load more'
     website = 'https://github.com/Othershe/RecyclerViewAdapter'
 }

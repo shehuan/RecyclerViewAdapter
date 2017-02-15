@@ -229,6 +229,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         return -1;
     }
 
+    public void isAutoLoadMore(boolean isAutoLoadMore) {
+        this.isAutoLoadMore = isAutoLoadMore;
+        mDatas.clear();
+    }
+
     /**
      * 清空footer view
      */
