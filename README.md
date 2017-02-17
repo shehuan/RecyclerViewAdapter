@@ -10,7 +10,7 @@
 ##导入
 ```java
 dependencies {
-    compile 'com.othershe:BaseAdapter:1.1.0'
+    compile 'com.othershe:BaseAdapter:1.1.3'
 }
 ```
 
