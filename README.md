@@ -21,7 +21,7 @@ dependencies {
 ```java
 public class CommonRefreshAdapter extends CommonBaseAdapter<T> {
 
-    public RefreshAdapter(Context context, List<T> datas, boolean isLoadMore) {
+    public CommonRefreshAdapter (Context context, List<T> datas, boolean isLoadMore) {
         super(context, datas, isLoadMore);
     }
 
