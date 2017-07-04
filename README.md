@@ -17,7 +17,7 @@ dependencies {
 ## 用法
 
 ### 一、创建Adapter
-##### 1、创建只有一种ItemView的Adaptr
+#### 1、创建只有一种ItemView的Adaptr
 ```java
 public class CommonRefreshAdapter extends CommonBaseAdapter<T> {
 
@@ -36,7 +36,7 @@ public class CommonRefreshAdapter extends CommonBaseAdapter<T> {
     }
 }
 ```
-##### 2、创建有多种ItemView的Adapter
+#### 2、创建有多种ItemView的Adapter
 ```java
 public class MultiRefreshAdapter extends MultiBaseAdapter<T> {
 
@@ -62,32 +62,32 @@ public class MultiRefreshAdapter extends MultiBaseAdapter<T> {
 ```
 
 ### 二、初始化Adapter
-##### 1、 初始化只有一种ItemView的Adaptr
+#### 1、 初始化只有一种ItemView的Adaptr
 ```java
 CommonRefreshAdapter mAdapter = new CommonRefreshAdapter(this, data, true);
 ```
-##### 2、初始化只有一种ItemView的Adaptr
+#### 2、初始化只有一种ItemView的Adaptr
 ```java
 MultiRefreshAdapter mAdapter = new MultiRefreshAdapter(this, data, true);
 ```
 PS：true代表开启加载更多。
 
-##### 3、初始化EmptyView
+#### 3、初始化EmptyView
 ```java
 View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);
 mAdapter.setEmptyView(emptyView);
 ```
-##### 4、直接移除EmptyView
+#### 4、直接移除EmptyView
 ```java
 mAdapter.removeEmptyView();
 ```
-##### 5、显示首次预加载无数据或失败的view,以便重新加载或提示用户
+#### 5、显示首次预加载无数据或失败的view,以便重新加载或提示用户
 ```java
 View reloadLayout = LayoutInflater.from(this).inflate(R.layout.reload_layout, (ViewGroup) mRecyclerView.getParent(), false);
 mAdapter.setReloadView(reloadLayout);
 ```
 
-##### 6、初始化加载中、加载失败、加载完成的Footer View布局
+#### 6、初始化加载中、加载失败、加载完成的Footer View布局
 ```java
 mAdapter.setLoadingView(view);
 
@@ -96,7 +96,7 @@ mAdapter.setLoadFailedView(view);
 mAdapter.setLoadEndView(view);
 ```
 
-##### 7、设置加载更多的回调
+#### 7、设置加载更多的回调
 ```java
 mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
@@ -106,7 +106,7 @@ mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
         });
 ```
 
-##### 8、设置item的点击回调
+#### 8、设置item的点击回调
 (1)设置只有一种ItemView的Item点击回调
 ```java
 mAdapter.setOnItemClickListener(new OnItemClickListeners<T>() {
@@ -118,7 +118,7 @@ mAdapter.setOnItemClickListener(new OnItemClickListeners<T>() {
         });
 ```
 
-##### 9、设置有多种ItemView类型的Item点击回调
+#### 9、设置有多种ItemView类型的Item点击回调
 ```java
 mAdapter.setOnMultiItemClickListener(new OnMultiItemClickListeners<T>() {
             @Override
@@ -129,19 +129,19 @@ mAdapter.setOnMultiItemClickListener(new OnMultiItemClickListeners<T>() {
 ```
 ### 三、更多操作
 
-##### 1、显示加载更多数据失败时的FooterView
+#### 1、显示加载更多数据失败时的FooterView
 ```java
 mAdapter.loadFailed();
 ```
-##### 2、显示加载数据结束的FooterView
+#### 2、显示加载数据结束的FooterView
 ```java
 mAdapter.loadEnd();
 ```
-##### 3、重置Adapter
+#### 3、重置Adapter
 ```java
 mAdapter.reset();
 ```
-##### 4、更新列表的相关方法
+#### 4、更新列表的相关方法
 ```java
 //新data插入到原data的尾部
 mAdapter.setLoadMoreData(data);
