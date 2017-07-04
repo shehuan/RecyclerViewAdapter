@@ -72,7 +72,7 @@ MultiRefreshAdapter mAdapter = new MultiRefreshAdapter(this, data, true);
 ```
 PS：true代表开启加载更多。
 
-#### 3、初始化EmptyView
+#### 3、设置化EmptyView
 ```java
 View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);
 mAdapter.setEmptyView(emptyView);
@@ -87,7 +87,7 @@ View reloadLayout = LayoutInflater.from(this).inflate(R.layout.reload_layout, (V
 mAdapter.setReloadView(reloadLayout);
 ```
 
-#### 6、初始化加载中、加载失败、加载完成的Footer View布局
+#### 6、设置化加载中、加载失败、加载完成的FooterView布局
 ```java
 mAdapter.setLoadingView(view);
 
@@ -106,8 +106,7 @@ mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
         });
 ```
 
-#### 8、设置item的点击回调
-(1)设置只有一种ItemView的Item点击回调
+#### 8、设置只有一种ItemView的Item点击回调
 ```java
 mAdapter.setOnItemClickListener(new OnItemClickListeners<T>() {
 
