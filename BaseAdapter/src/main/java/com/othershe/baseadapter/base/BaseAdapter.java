@@ -43,6 +43,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     private View mReloadView; //首次预加载失败、或无数据的view
     private RelativeLayout mFooterLayout;//footer view
 
+    private boolean isReset;//开始重新加载数据
+
     protected abstract int getViewType(int position, T data);
 
     public BaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
@@ -212,6 +214,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * 到达底部开始刷新
      */
     private void scrollLoadMore() {
+        if (isReset) {
+            return;
+        }
         if (mFooterLayout.getChildAt(0) == mLoadingView) {
             if (mLoadMoreListener != null) {
                 mLoadMoreListener.onLoadMore(false);
@@ -227,11 +232,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             return Util.findMax(lastVisibleItemPositions);
         }
         return -1;
-    }
-
-    public void isAutoLoadMore(boolean isAutoLoadMore) {
-        this.isAutoLoadMore = isAutoLoadMore;
-        mDatas.clear();
     }
 
     /**
@@ -287,6 +287,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @param datas
      */
     public void setNewData(List<T> datas) {
+        if (isReset) {
+            isReset = false;
+        }
         mDatas.clear();
         mDatas.addAll(datas);
         notifyDataSetChanged();
@@ -317,20 +320,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @param loadFailedView
      */
     public void setLoadFailedView(View loadFailedView) {
-        if (loadFailedView == null) {
-            return;
-        }
         mLoadFailedView = loadFailedView;
-        addFooterView(mLoadFailedView);
-        mLoadFailedView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addFooterView(mLoadingView);
-                if (mLoadMoreListener != null) {
-                    mLoadMoreListener.onLoadMore(true);
-                }
-            }
-        });
     }
 
     public void setLoadFailedView(int loadFailedId) {
@@ -344,7 +334,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      */
     public void setLoadEndView(View loadEndView) {
         mLoadEndView = loadEndView;
-        addFooterView(mLoadEndView);
     }
 
     public void setLoadEndView(int loadEndId) {
@@ -390,5 +379,42 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     public void setOnLoadMoreListener(OnLoadMoreListener loadMoreListener) {
         mLoadMoreListener = loadMoreListener;
+    }
+
+    /**
+     * 重置adapter，恢复到初始状态
+     */
+    public void reset() {
+        if (mLoadingView != null) {
+            addFooterView(mLoadingView);
+        }
+        isReset = true;
+        isAutoLoadMore = true;
+        mDatas.clear();
+    }
+
+    /**
+     * 数据加载完成
+     */
+    public void loadEnd() {
+        if (mLoadEndView != null) {
+            addFooterView(mLoadEndView);
+        }
+    }
+
+    /**
+     * 数据加载失败
+     */
+    public void loadFailed() {
+        addFooterView(mLoadFailedView);
+        mLoadFailedView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFooterView(mLoadingView);
+                if (mLoadMoreListener != null) {
+                    mLoadMoreListener.onLoadMore(true);
+                }
+            }
+        });
     }
 }

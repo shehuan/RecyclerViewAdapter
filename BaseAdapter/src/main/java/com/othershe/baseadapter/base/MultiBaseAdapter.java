@@ -21,7 +21,7 @@ public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
         super(context, datas, isOpenLoadMore);
     }
 
-    protected abstract void convert(ViewHolder holder, T data, int viewType);
+    protected abstract void convert(ViewHolder holder, T data, int position, int viewType);
 
     protected abstract int getItemLayoutId(int viewType);
 
@@ -43,12 +43,12 @@ public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
 
     private void bindCommonItem(RecyclerView.ViewHolder holder, final int position, final int viewType) {
         final ViewHolder viewHolder = (ViewHolder) holder;
-        convert(viewHolder, mDatas.get(position), viewType);
+        convert(viewHolder, mDatas.get(position), position, viewType);
 
         viewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mItemClickListener != null){
+                if (mItemClickListener != null) {
                     mItemClickListener.onItemClick(viewHolder, mDatas.get(position), position, viewType);
                 }
             }

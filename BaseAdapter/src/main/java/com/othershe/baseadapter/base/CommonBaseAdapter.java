@@ -31,7 +31,7 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
         super(context, datas, isOpenLoadMore);
     }
 
-    protected abstract void convert(ViewHolder holder, T data);
+    protected abstract void convert(ViewHolder holder, T data, int position);
 
     protected abstract int getItemLayoutId();
 
@@ -53,7 +53,7 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
 
     private void bindCommonItem(RecyclerView.ViewHolder holder, final int position) {
         final ViewHolder viewHolder = (ViewHolder) holder;
-        convert(viewHolder, mDatas.get(position));
+        convert(viewHolder, mDatas.get(position), position);
 
         viewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override

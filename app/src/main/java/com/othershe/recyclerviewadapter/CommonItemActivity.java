@@ -40,6 +40,10 @@ public class CommonItemActivity extends AppCompatActivity {
 
         //初始化 开始加载更多的loading View
         mAdapter.setLoadingView(R.layout.load_loading_layout);
+        //加载失败，更新footer view提示
+        mAdapter.setLoadFailedView(R.layout.load_failed_layout);
+        //加载完成，更新footer view提示
+        mAdapter.setLoadEndView(R.layout.load_end_layout);
 
         //设置加载更多触发的事件监听
         mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -88,11 +92,9 @@ public class CommonItemActivity extends AppCompatActivity {
 
                 if (mAdapter.getItemCount() > 15 && isFailed) {
                     isFailed = false;
-                    //加载失败，更新footer view提示
-                    mAdapter.setLoadFailedView(R.layout.load_failed_layout);
+                    mAdapter.loadFailed();
                 } else if (mAdapter.getItemCount() > 17) {
-                    //加载完成，更新footer view提示
-                    mAdapter.setLoadEndView(R.layout.load_end_layout);
+                    mAdapter.loadEnd();
                 } else {
                     final List<String> data = new ArrayList<>();
                     for (int i = 0; i < 12; i++) {

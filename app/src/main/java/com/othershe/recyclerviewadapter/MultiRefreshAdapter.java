@@ -20,7 +20,7 @@ public class MultiRefreshAdapter extends MultiBaseAdapter<String> {
     }
 
     @Override
-    protected void convert(ViewHolder holder, final String data, int viewType) {
+    protected void convert(ViewHolder holder, final String data, int position, int viewType) {
         if (viewType == 0) {
             holder.setText(R.id.item_title, data);
             holder.setOnClickListener(R.id.item_btn, new View.OnClickListener() {

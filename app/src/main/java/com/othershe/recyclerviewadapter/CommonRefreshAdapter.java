@@ -20,7 +20,7 @@ public class CommonRefreshAdapter extends CommonBaseAdapter<String> {
     }
 
     @Override
-    protected void convert(ViewHolder holder, final String data) {
+    protected void convert(ViewHolder holder, final String data, int position) {
         holder.setText(R.id.item_title, data);
         holder.setOnClickListener(R.id.item_btn, new View.OnClickListener() {
             @Override
@@ -29,6 +29,7 @@ public class CommonRefreshAdapter extends CommonBaseAdapter<String> {
             }
         });
     }
+
 
     @Override
     protected int getItemLayoutId() {
