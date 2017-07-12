@@ -18,14 +18,14 @@ import java.util.List;
  * Time: 2016/9/9 15:52
  */
 public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
-    protected OnItemClickListener<T> mItemClickListener;
+    private OnItemClickListener<T> mItemClickListener;
 
 
-    protected ArrayList<Integer> mViewId = new ArrayList<>();
-    protected ArrayList<OnSwipeMenuClickListener<T>> mListener = new ArrayList<>();
+    private ArrayList<Integer> mViewId = new ArrayList<>();
+    private ArrayList<OnSwipeMenuClickListener<T>> mListener = new ArrayList<>();
 
     private ArrayList<Integer> mItemChildIds = new ArrayList<>();
-    protected ArrayList<OnItemChildClickListener<T>> mItemChildListeners = new ArrayList<>();
+    private ArrayList<OnItemChildClickListener<T>> mItemChildListeners = new ArrayList<>();
 
     public CommonBaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
         super(context, datas, isOpenLoadMore);

@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.othershe.baseadapter.ViewHolder;
+import com.othershe.baseadapter.interfaces.OnItemChildClickListener;
 import com.othershe.baseadapter.interfaces.OnMultiItemClickListeners;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +18,9 @@ import java.util.List;
  */
 public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
     private OnMultiItemClickListeners<T> mItemClickListener;
+
+    private ArrayList<Integer> mItemChildIds = new ArrayList<>();
+    private ArrayList<OnItemChildClickListener<T>> mItemChildListeners = new ArrayList<>();
 
     public MultiBaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
         super(context, datas, isOpenLoadMore);
@@ -53,9 +58,26 @@ public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
                 }
             }
         });
+
+        for (int i = 0; i < mItemChildIds.size(); i++) {
+            final int tempI = i;
+            if (viewHolder.getConvertView().findViewById(mItemChildIds.get(i)) != null) {
+                viewHolder.getConvertView().findViewById(mItemChildIds.get(i)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mItemChildListeners.get(tempI).onItemChildClick(viewHolder, mDatas.get(position), position);
+                    }
+                });
+            }
+        }
     }
 
     public void setOnMultiItemClickListener(OnMultiItemClickListeners<T> itemClickListener) {
         mItemClickListener = itemClickListener;
+    }
+
+    public void setOnItemChildClickListener(int viewId, OnItemChildClickListener<T> itemChildClickListener) {
+        mItemChildIds.add(viewId);
+        mItemChildListeners.add(itemChildClickListener);
     }
 }

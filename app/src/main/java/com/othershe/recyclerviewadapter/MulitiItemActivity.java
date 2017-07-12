@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.othershe.baseadapter.interfaces.OnItemChildClickListener;
 import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
 import com.othershe.baseadapter.interfaces.OnMultiItemClickListeners;
 import com.othershe.baseadapter.ViewHolder;
@@ -57,6 +58,14 @@ public class MulitiItemActivity extends AppCompatActivity {
             @Override
             public void onItemClick(ViewHolder viewHolder, String data, int position, int viewType) {
                 Toast.makeText(MulitiItemActivity.this, data, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //item子view点击事件
+        mAdapter.setOnItemChildClickListener(R.id.item_btn, new OnItemChildClickListener<String>() {
+            @Override
+            public void onItemChildClick(ViewHolder viewHolder, String data, int position) {
+                Toast.makeText(MulitiItemActivity.this, "我是" + data + "的button", Toast.LENGTH_SHORT).show();
             }
         });
 

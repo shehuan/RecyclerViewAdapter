@@ -10,7 +10,7 @@
 ## 导入
 ```java
 dependencies {
-    compile 'com.othershe:BaseAdapter:1.1.4'
+    compile 'com.othershe:BaseAdapter:1.1.5'
 }
 ```
 
@@ -126,6 +126,17 @@ mAdapter.setOnMultiItemClickListener(new OnMultiItemClickListeners<T>() {
             }
         });
 ```
+
+#### 10、设置Item子view点击事件
+```java
+mAdapter.setOnItemChildClickListener(R.id.child, new OnItemChildClickListener<String>() {
+            @Override
+            public void onItemChildClick(ViewHolder viewHolder, String data, int position) {
+
+            }
+        });
+```
+
 ### 三、更多操作
 
 #### 1、显示加载更多数据失败时的FooterView

@@ -23,12 +23,12 @@ public class MultiRefreshAdapter extends MultiBaseAdapter<String> {
     protected void convert(ViewHolder holder, final String data, int position, int viewType) {
         if (viewType == 0) {
             holder.setText(R.id.item_title, data);
-            holder.setOnClickListener(R.id.item_btn, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(mContext, "我是" + data + "的button", Toast.LENGTH_SHORT).show();
-                }
-            });
+//            holder.setOnClickListener(R.id.item_btn, new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Toast.makeText(mContext, "我是" + data + "的button", Toast.LENGTH_SHORT).show();
+//                }
+//            });
         } else {
             holder.setText(R.id.item_title1, data);
         }
