@@ -24,7 +24,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public static final int TYPE_COMMON_VIEW = 100001;//普通类型 Item
     public static final int TYPE_FOOTER_VIEW = 100002;//footer类型 Item
     public static final int TYPE_EMPTY_VIEW = 100003;//empty view，即初始化加载时的提示View
-    public static final int TYPE_NODATE_VIEW = 100004;//初次加载无数据的默认空白view
+    public static final int TYPE_NODATA_VIEW = 100004;//初次加载无数据的默认空白view
     public static final int TYPE_RELOAD_VIEW = 100005;//初次加载无数据的可重新加载或提示用户的view
 
     private OnLoadMoreListener mLoadMoreListener;
@@ -66,7 +66,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             case TYPE_EMPTY_VIEW:
                 viewHolder = ViewHolder.create(mEmptyView);
                 break;
-            case TYPE_NODATE_VIEW:
+            case TYPE_NODATA_VIEW:
                 viewHolder = ViewHolder.create(new View(mContext));
                 break;
             case TYPE_RELOAD_VIEW:
@@ -94,7 +94,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             if (isRemoveEmptyView && mReloadView != null) {
                 return TYPE_RELOAD_VIEW;
             } else {
-                return TYPE_NODATE_VIEW;
+                return TYPE_NODATA_VIEW;
             }
         }
 
@@ -130,7 +130,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     protected boolean isCommonItemView(int viewType) {
         return viewType != TYPE_EMPTY_VIEW && viewType != TYPE_FOOTER_VIEW
-                && viewType != TYPE_NODATE_VIEW && viewType != TYPE_RELOAD_VIEW;
+                && viewType != TYPE_NODATA_VIEW && viewType != TYPE_RELOAD_VIEW;
     }
 
     /**
@@ -202,6 +202,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (isAutoLoadMore && findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
+                    if (mDatas.isEmpty() && mEmptyView != null) {
+                        return;
+                    }
                     scrollLoadMore();
                 } else if (isAutoLoadMore) {
                     isAutoLoadMore = false;

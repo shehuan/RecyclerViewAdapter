@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 start(CommonItemActivity.class);
                 break;
             case R.id.button2:
-                start(MulitiItemActivity.class);
+                start(MultiItemActivity.class);
                 break;
             case R.id.button3:
                 start(InitLoadActivity.class);

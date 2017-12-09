@@ -18,7 +18,7 @@ import com.othershe.baseadapter.ViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MulitiItemActivity extends AppCompatActivity {
+public class MultiItemActivity extends AppCompatActivity {
 
     private MultiRefreshAdapter mAdapter;
 
@@ -32,8 +32,12 @@ public class MulitiItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
 
+        List<String> data = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            data.add("item--" + i);
+        }
         //初始化adapter
-        mAdapter = new MultiRefreshAdapter(this, null, true);
+        mAdapter = new MultiRefreshAdapter(this, data, true);
 
         //初始化EmptyView
         View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);
@@ -57,7 +61,7 @@ public class MulitiItemActivity extends AppCompatActivity {
         mAdapter.setOnMultiItemClickListener(new OnMultiItemClickListeners<String>() {
             @Override
             public void onItemClick(ViewHolder viewHolder, String data, int position, int viewType) {
-                Toast.makeText(MulitiItemActivity.this, data, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MultiItemActivity.this, data, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -65,7 +69,7 @@ public class MulitiItemActivity extends AppCompatActivity {
         mAdapter.setOnItemChildClickListener(R.id.item_btn, new OnItemChildClickListener<String>() {
             @Override
             public void onItemChildClick(ViewHolder viewHolder, String data, int position) {
-                Toast.makeText(MulitiItemActivity.this, "我是" + data + "的button", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MultiItemActivity.this, "我是" + data + "的button", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -76,18 +80,12 @@ public class MulitiItemActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
 
-        //延时3s刷新列表
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                List<String> data = new ArrayList<>();
-                for (int i = 0; i < 12; i++) {
-                    data.add("item--" + i);
-                }
-                //刷新数据
-                mAdapter.setNewData(data);
-            }
-        }, 3000);
+//        List<String> data = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            data.add("item--" + i);
+//        }
+//        //刷新数据
+//        mAdapter.setNewData(data);
     }
 
     private void loadMore() {
@@ -96,14 +94,14 @@ public class MulitiItemActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                if (mAdapter.getItemCount() > 15 && isFailed) {
+                if (mAdapter.getItemCount() >= 10 && isFailed) {
                     isFailed = false;
                     mAdapter.loadFailed();
-                } else if (mAdapter.getItemCount() > 17) {
+                } else if (mAdapter.getItemCount() >= 20) {
                     mAdapter.loadEnd();
                 } else {
                     final List<String> data = new ArrayList<>();
-                    for (int i = 0; i < 12; i++) {
+                    for (int i = 0; i < 10; i++) {
                         data.add("item--" + (mAdapter.getItemCount() + i - 1));
                     }
                     //刷新数据

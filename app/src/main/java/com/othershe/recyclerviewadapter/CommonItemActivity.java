@@ -74,7 +74,7 @@ public class CommonItemActivity extends AppCompatActivity {
             @Override
             public void run() {
                 List<String> data = new ArrayList<>();
-                for (int i = 0; i < 12; i++) {
+                for (int i = 0; i < 10; i++) {
                     data.add("item--" + i);
                 }
                 //刷新数据
@@ -90,14 +90,14 @@ public class CommonItemActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                if (mAdapter.getItemCount() > 15 && isFailed) {
+                if (mAdapter.getItemCount() >= 10 && isFailed) {
                     isFailed = false;
                     mAdapter.loadFailed();
-                } else if (mAdapter.getItemCount() > 17) {
+                } else if (mAdapter.getItemCount() >= 20) {
                     mAdapter.loadEnd();
                 } else {
                     final List<String> data = new ArrayList<>();
-                    for (int i = 0; i < 12; i++) {
+                    for (int i = 0; i < 10; i++) {
                         data.add("item--" + (mAdapter.getItemCount() + i - 1));
                     }
                     //刷新数据

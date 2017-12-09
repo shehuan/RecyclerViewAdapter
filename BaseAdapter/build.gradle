@@ -2,14 +2,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "23.0.3"
+    compileSdkVersion gradle.compileSdkVersion
+    buildToolsVersion gradle.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion gradle.minSdkVersion
+        targetSdkVersion gradle.targetSdkVersion
+        versionCode gradle.versionCode
+        versionName gradle.versionName
     }
     buildTypes {
         release {
@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:recyclerview-v7:24.1.1'
+    compile 'com.android.support:recyclerview-v7:' + gradle.supportLibraryVersion
     testCompile 'junit:junit:4.12'
 }
 
@@ -39,7 +39,7 @@ publish {
     userOrg = 'othershe'
     groupId = 'com.othershe'
     artifactId = 'BaseAdapter'
-    publishVersion = '1.1.5'
+    publishVersion = '1.1.6'
     desc = 'A RecyclerView Adapter that support load more'
     website = 'https://github.com/Othershe/RecyclerViewAdapter'
 }

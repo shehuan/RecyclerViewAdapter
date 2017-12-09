@@ -17,7 +17,7 @@
         </activity>
 
         <activity android:name=".CommonItemActivity" />
-        <activity android:name=".MulitiItemActivity" />
+        <activity android:name=".MultiItemActivity" />
         <activity android:name=".InitLoadActivity" />
     </application>
 
