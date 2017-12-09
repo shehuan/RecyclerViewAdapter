@@ -80,7 +80,7 @@ public class CommonItemActivity extends AppCompatActivity {
                 //刷新数据
                 mAdapter.setNewData(data);
             }
-        }, 3000);
+        }, 2000);
     }
 
 

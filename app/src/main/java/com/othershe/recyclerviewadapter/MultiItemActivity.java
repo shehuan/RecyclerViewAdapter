@@ -5,9 +5,6 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.othershe.baseadapter.interfaces.OnItemChildClickListener;
@@ -38,10 +35,6 @@ public class MultiItemActivity extends AppCompatActivity {
         }
         //初始化adapter
         mAdapter = new MultiRefreshAdapter(this, data, true);
-
-        //初始化EmptyView
-        View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);
-        mAdapter.setEmptyView(emptyView);
 
         //初始化 开始加载更多的loading View
         mAdapter.setLoadingView(R.layout.load_loading_layout);
