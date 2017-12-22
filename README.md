@@ -5,7 +5,7 @@
 
 [原理、效果](http://www.jianshu.com/p/66c065874848)
 
-[demo下载](http://fir.im/k7dl)
+[demo下载](https://fir.im/e5pz)
 
 ## 导入
 ```java
