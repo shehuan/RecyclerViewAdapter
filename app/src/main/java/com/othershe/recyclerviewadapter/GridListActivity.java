@@ -3,6 +3,7 @@ package com.othershe.recyclerviewadapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,16 +12,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.othershe.baseadapter.ViewHolder;
 import com.othershe.baseadapter.interfaces.OnItemClickListener;
 import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
-import com.othershe.baseadapter.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommonItemActivity extends AppCompatActivity {
+public class GridListActivity extends AppCompatActivity {
 
-    private CommonRefreshAdapter mAdapter;
+    private GridListAdapter mAdapter;
 
     private RecyclerView mRecyclerView;
 
@@ -33,11 +34,18 @@ public class CommonItemActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
 
         //初始化adapter
-        mAdapter = new CommonRefreshAdapter(this, null, true);
+        mAdapter = new GridListAdapter(this, null, true);
 
         //初始化EmptyView
         View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);
         mAdapter.setEmptyView(emptyView);
+
+        TextView t1 = new TextView(this);
+        t1.setText("我是header-1");
+        mAdapter.addHeaderView(t1);
+        TextView t2 = new TextView(this);
+        t2.setText("我是header-2");
+        mAdapter.addHeaderView(t2);
 
         //初始化 开始加载更多的loading View
         mAdapter.setLoadingView(R.layout.load_loading_layout);
@@ -59,13 +67,13 @@ public class CommonItemActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(ViewHolder viewHolder, String data, int position) {
-                Toast.makeText(CommonItemActivity.this, data, Toast.LENGTH_SHORT).show();
+                Toast.makeText(GridListActivity.this, data, Toast.LENGTH_SHORT).show();
             }
         });
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(layoutManager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
 
         mRecyclerView.setAdapter(mAdapter);
 
@@ -80,13 +88,6 @@ public class CommonItemActivity extends AppCompatActivity {
                 }
                 //刷新数据
                 mAdapter.setNewData(data);
-
-                TextView t1 = new TextView(CommonItemActivity.this);
-                t1.setText("我是header-1");
-                mAdapter.addHeaderView(t1);
-                TextView t2 = new TextView(CommonItemActivity.this);
-                t2.setText("我是header-2");
-                mAdapter.addHeaderView(t2);
             }
         }, 2000);
     }

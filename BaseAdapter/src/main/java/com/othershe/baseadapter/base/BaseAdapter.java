@@ -1,6 +1,7 @@
 package com.othershe.baseadapter.base;
 
 import android.content.Context;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,16 +22,19 @@ import java.util.List;
  * Time: 2016/8/29 09:46
  */
 public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public static final int TYPE_COMMON_VIEW = 100001;//普通类型 Item
-    public static final int TYPE_FOOTER_VIEW = 100002;//footer类型 Item
-    public static final int TYPE_EMPTY_VIEW = 100003;//empty view，即初始化加载时的提示View
-    public static final int TYPE_NODATA_VIEW = 100004;//初次加载无数据的默认空白view
-    public static final int TYPE_RELOAD_VIEW = 100005;//初次加载无数据的可重新加载或提示用户的view
+    static final int TYPE_COMMON_VIEW = 100001;//普通类型 Item
+    private static final int TYPE_FOOTER_VIEW = 100002;//footer类型 Item
+    private static final int TYPE_EMPTY_VIEW = 100003;//empty view，即初始化加载时的提示View
+    private static final int TYPE_NODATA_VIEW = 100004;//初次加载无数据的默认空白view
+    private static final int TYPE_RELOAD_VIEW = 100005;//初次加载无数据的可重新加载或提示用户的view
+    private static final int TYPE_BASE_HEADER_VIEW = 200000;
+
+    private SparseArrayCompat<View> mHeaderViews = new SparseArrayCompat<>();
 
     private OnLoadMoreListener mLoadMoreListener;
 
     protected Context mContext;
-    protected List<T> mDatas;
+    private List<T> mDatas;
     private boolean mOpenLoadMore;//是否开启加载更多
     private boolean isAutoLoadMore = true;//是否自动加载，当数据不满一屏幕会自动加载
 
@@ -45,6 +49,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     private boolean isReset;//开始重新加载数据
 
+    private boolean isLoading;//是否正在加载更多
+
     protected abstract int getViewType(int position, T data);
 
     public BaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
@@ -55,6 +61,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        if (mHeaderViews.get(viewType) != null) {
+            return ViewHolder.create(mHeaderViews.get(viewType));
+        }
+
         ViewHolder viewHolder = null;
         switch (viewType) {
             case TYPE_FOOTER_VIEW:
@@ -81,7 +92,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (mDatas.isEmpty() && mEmptyView != null) {
             return 1;
         }
-        return mDatas.size() + getFooterViewCount();
+        return mDatas.size() + getFooterViewCount() + getHeaderCount();
     }
 
     @Override
@@ -100,9 +111,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
         if (isFooterView(position)) {
             return TYPE_FOOTER_VIEW;
+        } else if (isHeaderView(position)) {
+            return mHeaderViews.keyAt(position);
         }
 
-        return getViewType(position, mDatas.get(position));
+        return getViewType(position - getHeaderCount(), mDatas.get(position - getHeaderCount()));
     }
 
     /**
@@ -130,18 +143,37 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     protected boolean isCommonItemView(int viewType) {
         return viewType != TYPE_EMPTY_VIEW && viewType != TYPE_FOOTER_VIEW
-                && viewType != TYPE_NODATA_VIEW && viewType != TYPE_RELOAD_VIEW;
+                && viewType != TYPE_NODATA_VIEW && viewType != TYPE_RELOAD_VIEW
+                && !(viewType >= TYPE_BASE_HEADER_VIEW);
+    }
+
+    private boolean isHeaderView(int position) {
+        return position < getHeaderCount();
+    }
+
+    protected int getHeaderCount() {
+        return mHeaderViews.size();
     }
 
     /**
-     * StaggeredGridLayoutManager模式时，FooterView可占据一行
+     * 添加HeaderView
+     *
+     * @param view
+     */
+    public void addHeaderView(View view) {
+        mHeaderViews.put(TYPE_BASE_HEADER_VIEW + getHeaderCount(), view);
+    }
+
+    /**
+     * StaggeredGridLayoutManager模式时，HeaderView、FooterView可占据一行
      *
      * @param holder
      */
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (isFooterView(holder.getLayoutPosition())) {
+        int position = holder.getLayoutPosition();
+        if (isFooterView(position) || isHeaderView(position)) {
             ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
 
             if (lp != null && lp instanceof StaggeredGridLayoutManager.LayoutParams) {
@@ -152,7 +184,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * GridLayoutManager模式时， FooterView可占据一行，判断RecyclerView是否到达底部
+     * GridLayoutManager模式时， HeaderView、FooterView可占据一行，判断RecyclerView是否到达底部
      *
      * @param recyclerView
      */
@@ -165,7 +197,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    if (isFooterView(position)) {
+                    if (isFooterView(position) || isHeaderView(position)) {
                         return gridManager.getSpanCount();
                     }
                     return 1;
@@ -220,8 +252,10 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (isReset) {
             return;
         }
-        if (mFooterLayout.getChildAt(0) == mLoadingView) {
+
+        if (mFooterLayout.getChildAt(0) == mLoadingView && !isLoading) {
             if (mLoadMoreListener != null) {
+                isLoading = true;
                 mLoadMoreListener.onLoadMore(false);
             }
         }
@@ -264,18 +298,32 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
+     * 获得列表数据个数
+     *
+     * @return
+     */
+    public int getDataCount() {
+        return mDatas.size();
+    }
+
+    protected List<T> getAllData() {
+        return mDatas;
+    }
+
+    /**
      * 刷新加载更多的数据
      *
      * @param datas
      */
     public void setLoadMoreData(List<T> datas) {
+        isLoading = false;
         int size = mDatas.size();
         mDatas.addAll(datas);
-        notifyItemInserted(size);
+        notifyItemInserted(size + getHeaderCount());
     }
 
     /**
-     * 下拉刷新，得到的新数据查到原数据起始
+     * 下拉刷新，得到的新数据插入到原数据头部
      *
      * @param datas
      */
@@ -293,6 +341,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (isReset) {
             isReset = false;
         }
+        isLoading = false;
         mDatas.clear();
         mDatas.addAll(datas);
         notifyDataSetChanged();
@@ -391,6 +440,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (mLoadingView != null) {
             addFooterView(mLoadingView);
         }
+        isLoading = false;
         isReset = true;
         isAutoLoadMore = true;
         mDatas.clear();

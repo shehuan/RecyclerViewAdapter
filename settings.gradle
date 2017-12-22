@@ -3,8 +3,8 @@ include ':BaseAdapter'
 
 gradle.ext.supportLibraryVersion = '26.1.0'
 gradle.ext.buildToolsVersion = '26.0.2'
-gradle.ext.versionCode = 116
-gradle.ext.versionName = "1.1.6"
+gradle.ext.versionCode = 120
+gradle.ext.versionName = "1.2.0"
 gradle.ext.compileSdkVersion = 26
 gradle.ext.minSdkVersion = 14
 gradle.ext.targetSdkVersion = 26

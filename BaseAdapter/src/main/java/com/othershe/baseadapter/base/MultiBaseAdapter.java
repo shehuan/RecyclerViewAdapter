@@ -42,19 +42,19 @@ public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int viewType = holder.getItemViewType();
         if (isCommonItemView(viewType)) {
-            bindCommonItem(holder, position, viewType);
+            bindCommonItem(holder, position - getHeaderCount(), viewType);
         }
     }
 
     private void bindCommonItem(RecyclerView.ViewHolder holder, final int position, final int viewType) {
         final ViewHolder viewHolder = (ViewHolder) holder;
-        convert(viewHolder, mDatas.get(position), position, viewType);
+        convert(viewHolder, getAllData().get(position), position, viewType);
 
         viewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mItemClickListener != null) {
-                    mItemClickListener.onItemClick(viewHolder, mDatas.get(position), position, viewType);
+                    mItemClickListener.onItemClick(viewHolder, getAllData().get(position), position, viewType);
                 }
             }
         });
@@ -65,7 +65,7 @@ public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
                 viewHolder.getConvertView().findViewById(mItemChildIds.get(i)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mItemChildListeners.get(tempI).onItemChildClick(viewHolder, mDatas.get(position), position);
+                        mItemChildListeners.get(tempI).onItemChildClick(viewHolder, getAllData().get(position), position);
                     }
                 });
             }

@@ -19,6 +19,7 @@
         <activity android:name=".CommonItemActivity" />
         <activity android:name=".MultiItemActivity" />
         <activity android:name=".InitLoadActivity" />
+        <activity android:name=".GridListActivity" />
     </application>
 
 </manifest>

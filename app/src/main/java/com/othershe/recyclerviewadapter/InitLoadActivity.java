@@ -123,7 +123,7 @@ public class InitLoadActivity extends AppCompatActivity {
                 } else {
                     final List<String> data = new ArrayList<>();
                     for (int i = 0; i < 10; i++) {
-                        data.add("item--" + (mAdapter.getItemCount() + i - 1));
+                        data.add("item--" + (mAdapter.getDataCount() + i));
                     }
                     //刷新数据
                     mAdapter.setLoadMoreData(data);

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.othershe.baseadapter.interfaces.OnItemChildClickListener;
@@ -35,6 +36,13 @@ public class MultiItemActivity extends AppCompatActivity {
         }
         //初始化adapter
         mAdapter = new MultiRefreshAdapter(this, data, true);
+
+        TextView t1 = new TextView(this);
+        t1.setText("我是header-1");
+        mAdapter.addHeaderView(t1);
+        TextView t2 = new TextView(this);
+        t2.setText("我是header-2");
+        mAdapter.addHeaderView(t2);
 
         //初始化 开始加载更多的loading View
         mAdapter.setLoadingView(R.layout.load_loading_layout);
@@ -71,14 +79,6 @@ public class MultiItemActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mAdapter);
-
-
-//        List<String> data = new ArrayList<>();
-//        for (int i = 0; i < 10; i++) {
-//            data.add("item--" + i);
-//        }
-//        //刷新数据
-//        mAdapter.setNewData(data);
     }
 
     private void loadMore() {
@@ -95,7 +95,7 @@ public class MultiItemActivity extends AppCompatActivity {
                 } else {
                     final List<String> data = new ArrayList<>();
                     for (int i = 0; i < 10; i++) {
-                        data.add("item--" + (mAdapter.getItemCount() + i - 1));
+                        data.add("item--" + (mAdapter.getDataCount() + i));
                     }
                     //刷新数据
                     mAdapter.setLoadMoreData(data);
