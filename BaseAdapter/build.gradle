@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.Othershe'
 
 android {
     compileSdkVersion gradle.compileSdkVersion
@@ -24,25 +26,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:' + gradle.supportLibraryVersion
     testCompile 'junit:junit:4.12'
 }
-
-allprojects {
-    tasks.withType(Javadoc) {
-        options {
-            encoding "UTF-8"
-            charSet 'UTF-8'
-            links "http://docs.oracle.com/javase/7/docs/api"
-        }
-    }
-}
-
-publish {
-    userOrg = 'othershe'
-    groupId = 'com.othershe'
-    artifactId = 'BaseAdapter'
-    publishVersion = '1.2.0'
-    desc = 'A RecyclerView Adapter that support load more'
-    website = 'https://github.com/Othershe/RecyclerViewAdapter'
-}
-
 
 

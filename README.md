@@ -8,9 +8,22 @@
 [demo下载](https://fir.im/e5pz)
 
 ## 导入
-```java
+
+**1. 添加JitPack仓库**
+
+在当前项目根目录下的 `build.gradle` 文件中添加如下内容:
+``` gradle
+allprojects {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+**2. 添加项目依赖**
+``` gradle
 dependencies {
-    compile 'com.othershe:BaseAdapter:1.2.1'
+        compile 'com.github.Othershe:BaseAdapter:1.2.1'
 }
 ```
 
