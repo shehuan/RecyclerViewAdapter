@@ -84,7 +84,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         view.setOnClickListener(clickListener);
     }
 
-    public void setBgRes(int viewId, int resId) {
+    public void setBgResource(int viewId, int resId) {
         View view = getView(viewId);
         view.setBackgroundResource(resId);
     }
@@ -92,5 +92,10 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     public void setBgColor(int viewId, int colorId) {
         View view = getView(viewId);
         view.setBackgroundColor(colorId);
+    }
+
+    public void setVisibility(int viewId, int visibility) {
+        View view = getView(viewId);
+        view.setVisibility(visibility);
     }
 }
