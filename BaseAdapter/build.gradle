@@ -5,7 +5,6 @@ group='com.github.Othershe'
 
 android {
     compileSdkVersion gradle.compileSdkVersion
-    buildToolsVersion gradle.buildToolsVersion
 
     defaultConfig {
         minSdkVersion gradle.minSdkVersion
