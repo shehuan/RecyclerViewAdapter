@@ -23,7 +23,7 @@ allprojects {
 **2. 添加项目依赖**
 ``` gradle
 dependencies {
-        compile 'com.github.Othershe:RecyclerViewAdapter:1.2.1'
+        compile 'com.github.Othershe:RecyclerViewAdapter:1.2.2'
 }
 ```
 
@@ -154,6 +154,23 @@ mAdapter.setOnItemChildClickListener(R.id.child, new OnItemChildClickListener<St
 ```
 // 可添加多个
 mAdapter.addHeaderView(view)
+```
+
+#### 12、控制HeaderView的显示
+```
+mAdapter.isShowHeaderView()
+```
+
+#### 13、数据不满一屏时默认关闭自动加载更多，可用如下方法开启
+```
+// 可添加多个
+mAdapter.openAutoLoadMore()
+```
+
+#### 14、某些情况你可能需要移除LoadView
+```
+// 可添加多个
+mAdapter.clearLoadView()
 ```
 
 ### 三、更多操作

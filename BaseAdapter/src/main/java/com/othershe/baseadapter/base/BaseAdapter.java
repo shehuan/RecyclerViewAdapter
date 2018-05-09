@@ -35,34 +35,35 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     protected Context mContext;
     private List<T> mDatas;
-    private boolean mOpenLoadMore;//是否开启加载更多
-    private boolean isAutoLoadMore = true;//是否自动加载，当数据不满一屏幕会自动加载
-
-    private boolean isRemoveEmptyView;
+    private boolean isOpenLoadMore;//是否开启加载更多
+    private boolean isAutoLoadMore;//是否自动加载，当数据不满一屏幕会自动加载
+    private boolean isAutoLoadMoreEnd;//自动加载更多是否已经结束
 
     private View mLoadingView; //分页加载中view
     private View mLoadFailedView; //分页加载失败view
     private View mLoadEndView; //分页加载结束view
     private View mEmptyView; //首次预加载view
     private View mReloadView; //首次预加载失败、或无数据的view
-    private RelativeLayout mFooterLayout;//footer view
+    private RelativeLayout mFooterLayout;//FooterView
 
     private boolean isReset;//开始重新加载数据
 
     private boolean isLoading;//是否正在加载更多
+
+    private boolean showHeaderView = true;//是否显示HeaderView
 
     protected abstract int getViewType(int position, T data);
 
     public BaseAdapter(Context context, List<T> datas, boolean isOpenLoadMore) {
         mContext = context;
         mDatas = datas == null ? new ArrayList<T>() : datas;
-        mOpenLoadMore = isOpenLoadMore;
+        this.isOpenLoadMore = isOpenLoadMore;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if (mHeaderViews.get(viewType) != null) {
+        if (showHeaderView && mHeaderViews.get(viewType) != null) {
             return ViewHolder.create(mHeaderViews.get(viewType));
         }
 
@@ -89,7 +90,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        if (mDatas.isEmpty() && mEmptyView != null) {
+        if (mDatas.isEmpty() && (mEmptyView != null || mReloadView != null)) {
             return 1;
         }
         return mDatas.size() + getFooterViewCount() + getHeaderCount();
@@ -98,22 +99,29 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemViewType(int position) {
         if (mDatas.isEmpty()) {
-            if (mEmptyView != null && !isRemoveEmptyView) {
+            if (mEmptyView != null) {
                 return TYPE_EMPTY_VIEW;
             }
 
-            if (isRemoveEmptyView && mReloadView != null) {
+            if (mReloadView != null) {
                 return TYPE_RELOAD_VIEW;
-            } else {
-                return TYPE_NODATA_VIEW;
             }
+
+            if (showHeaderView && isHeaderView(position)) {
+                return mHeaderViews.keyAt(position);
+            }
+
+            return TYPE_NODATA_VIEW;
+        }
+
+        if (showHeaderView && isHeaderView(position)) {
+            return mHeaderViews.keyAt(position);
         }
 
         if (isFooterView(position)) {
             return TYPE_FOOTER_VIEW;
-        } else if (isHeaderView(position)) {
-            return mHeaderViews.keyAt(position);
         }
+
 
         return getViewType(position - getHeaderCount(), mDatas.get(position - getHeaderCount()));
     }
@@ -138,7 +146,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @return
      */
     private boolean isFooterView(int position) {
-        return mOpenLoadMore && position >= getItemCount() - 1;
+        return isOpenLoadMore && position >= getItemCount() - 1;
     }
 
     protected boolean isCommonItemView(int viewType) {
@@ -152,7 +160,14 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     protected int getHeaderCount() {
+        if (!showHeaderView) {
+            return 0;
+        }
         return mHeaderViews.size();
+    }
+
+    public void isShowHeaderView(boolean showHeaderView) {
+        this.showHeaderView = showHeaderView;
     }
 
     /**
@@ -161,6 +176,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @param view
      */
     public void addHeaderView(View view) {
+        if (view == null) {
+            return;
+        }
         mHeaderViews.put(TYPE_BASE_HEADER_VIEW + getHeaderCount(), view);
     }
 
@@ -215,7 +233,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @param layoutManager
      */
     private void startLoadMore(RecyclerView recyclerView, final RecyclerView.LayoutManager layoutManager) {
-        if (!mOpenLoadMore || mLoadMoreListener == null) {
+        if (!isOpenLoadMore || mLoadMoreListener == null) {
             return;
         }
 
@@ -224,7 +242,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!isAutoLoadMore && findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
+                    if (isAutoLoadMoreEnd && findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
                         scrollLoadMore();
                     }
                 }
@@ -233,13 +251,18 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isAutoLoadMore && findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
-                    if (mDatas.isEmpty() && mEmptyView != null) {
+                if (findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
+                    if (mEmptyView != null || mReloadView != null) {
                         return;
                     }
-                    scrollLoadMore();
-                } else if (isAutoLoadMore) {
-                    isAutoLoadMore = false;
+                    if (isAutoLoadMore && !isAutoLoadMoreEnd) {
+                        scrollLoadMore();
+                    } else if (!isAutoLoadMoreEnd) {
+                        loadEnd();
+                        isAutoLoadMoreEnd = true;
+                    }
+                } else {
+                    isAutoLoadMoreEnd = true;
                 }
             }
         });
@@ -345,6 +368,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         mDatas.clear();
         mDatas.addAll(datas);
         notifyDataSetChanged();
+        mEmptyView = null;
+        mReloadView = null;
     }
 
     public void remove(int position) {
@@ -405,7 +430,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * 移除emptyView
      */
     public void removeEmptyView() {
-        isRemoveEmptyView = true;
+        mEmptyView = null;
         notifyDataSetChanged();
     }
 
@@ -416,7 +441,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      */
     public void setReloadView(View reloadView) {
         mReloadView = reloadView;
-        isRemoveEmptyView = true;
+        mEmptyView = null;
         notifyDataSetChanged();
     }
 
@@ -426,7 +451,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @return
      */
     public int getFooterViewCount() {
-        return mOpenLoadMore && !mDatas.isEmpty() ? 1 : 0;
+        return isOpenLoadMore && !mDatas.isEmpty() ? 1 : 0;
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener loadMoreListener) {
@@ -442,7 +467,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         }
         isLoading = false;
         isReset = true;
-        isAutoLoadMore = true;
+        isAutoLoadMoreEnd = false;
         mDatas.clear();
     }
 
@@ -452,6 +477,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public void loadEnd() {
         if (mLoadEndView != null) {
             addFooterView(mLoadEndView);
+        } else {
+            addFooterView(new View(mContext));
         }
     }
 
@@ -469,5 +496,16 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
                 }
             }
         });
+    }
+
+    /**
+     * 开启初次数据不满一屏自动加载更多
+     */
+    public void openAutoLoadMore() {
+        this.isAutoLoadMore = true;
+    }
+
+    public void clearLoadView() {
+        addFooterView(new View(mContext));
     }
 }
