@@ -163,13 +163,11 @@ mAdapter.isShowHeaderView()
 
 #### 13、数据不满一屏时默认关闭自动加载更多，可用如下方法开启
 ```
-// 可添加多个
 mAdapter.openAutoLoadMore()
 ```
 
 #### 14、某些情况你可能需要移除LoadView
 ```
-// 可添加多个
 mAdapter.clearLoadView()
 ```
 
