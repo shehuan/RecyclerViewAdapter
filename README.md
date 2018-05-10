@@ -23,7 +23,7 @@ allprojects {
 **2. 添加项目依赖**
 ``` gradle
 dependencies {
-        implementation 'com.github.Othershe:RecyclerViewAdapter:1.2.4'
+        implementation 'com.github.Othershe:RecyclerViewAdapter:1.2.5'
 }
 ```
 

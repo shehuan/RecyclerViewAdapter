@@ -252,7 +252,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (findLastVisibleItemPosition(layoutManager) + 1 == getItemCount()) {
-                    if (mEmptyView != null || mReloadView != null) {
+                    if (mEmptyView != null || mReloadView != null
+                            || (mHeaderViews.size() > 0 && showHeaderView && mDatas.isEmpty())) {
                         return;
                     }
                     if (isAutoLoadMore && !isAutoLoadMoreEnd) {
