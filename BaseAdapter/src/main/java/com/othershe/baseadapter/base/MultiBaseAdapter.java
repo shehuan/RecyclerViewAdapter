@@ -1,6 +1,7 @@
 package com.othershe.baseadapter.base;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +31,9 @@ public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
 
     protected abstract int getItemLayoutId(int viewType);
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (isCommonItemView(viewType)) {
             return ViewHolder.create(mContext, getItemLayoutId(viewType), parent);
         }

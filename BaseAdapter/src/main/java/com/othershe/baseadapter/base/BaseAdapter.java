@@ -1,6 +1,7 @@
 package com.othershe.baseadapter.base;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,8 +61,9 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         this.isOpenLoadMore = isOpenLoadMore;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         if (showHeaderView && mHeaderViews.get(viewType) != null) {
             return ViewHolder.create(mHeaderViews.get(viewType));
@@ -132,7 +134,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @param position
      * @return
      */
-    public T getItem(int position) {
+    public T getData(int position) {
         if (mDatas.isEmpty()) {
             return null;
         }
@@ -330,7 +332,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         return mDatas.size();
     }
 
-    protected List<T> getAllData() {
+    public List<T> getAllData() {
         return mDatas;
     }
 
@@ -341,19 +343,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      */
     public void setLoadMoreData(List<T> datas) {
         isLoading = false;
-        int size = mDatas.size();
-        mDatas.addAll(datas);
-        notifyItemInserted(size + getHeaderCount());
-    }
-
-    /**
-     * 下拉刷新，得到的新数据插入到原数据头部
-     *
-     * @param datas
-     */
-    public void setData(List<T> datas) {
-        mDatas.addAll(0, datas);
-        notifyDataSetChanged();
+        insert(datas, mDatas.size());
     }
 
     /**
@@ -362,20 +352,91 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @param datas
      */
     public void setNewData(List<T> datas) {
-        if (isReset) {
-            isReset = false;
+        if (isOpenLoadMore) {
+            if (isReset) {
+                isReset = false;
+            }
+            isLoading = false;
+            mEmptyView = null;
+            mReloadView = null;
         }
-        isLoading = false;
         mDatas.clear();
         mDatas.addAll(datas);
         notifyDataSetChanged();
-        mEmptyView = null;
-        mReloadView = null;
     }
 
+    /**
+     * 删除某个位置的数据
+     *
+     * @param position
+     */
     public void remove(int position) {
+        if (position >= mDatas.size() || position < 0) {
+            return;
+        }
         mDatas.remove(position);
-        notifyDataSetChanged();
+        notifyItemRemoved(position + getHeaderCount());
+        if (position != mDatas.size()) {
+            notifyItemRangeChanged(position + getHeaderCount(), mDatas.size() - position);
+        }
+    }
+
+    /**
+     * 从某个位置开始添加若干个数据
+     *
+     * @param datas
+     * @param position
+     */
+    public void insert(List<T> datas, int position) {
+        if (position > mDatas.size() || position < 0) {
+            return;
+        }
+        mDatas.addAll(position, datas);
+        notifyItemRangeInserted(position + getHeaderCount(), datas.size());
+        notifyItemRangeChanged(position + getHeaderCount(), mDatas.size() - position);
+    }
+
+    /**
+     * 给列表末尾追加多个数据
+     *
+     * @param datas
+     */
+    public void insert(List<T> datas) {
+        insert(datas, mDatas.size());
+    }
+
+    /**
+     * 添加单个数据到指定位置
+     *
+     * @param data
+     * @param position
+     */
+    public void insert(T data, int position) {
+        if (position > mDatas.size() || position < 0) {
+            return;
+        }
+        mDatas.add(position, data);
+        notifyItemInserted(position + getHeaderCount());
+        notifyItemRangeChanged(position + getHeaderCount(), mDatas.size() - position);
+    }
+
+    /**
+     * 给列表末尾追加单个数据
+     *
+     * @param data
+     */
+    public void insert(T data) {
+        insert(data, mDatas.size());
+    }
+
+
+    /**
+     * 更新某个位置的数据
+     *
+     * @param position
+     */
+    public void change(int position) {
+        notifyItemChanged(position);
     }
 
     /**
@@ -451,7 +512,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      *
      * @return
      */
-    public int getFooterViewCount() {
+    private int getFooterViewCount() {
         return isOpenLoadMore && !mDatas.isEmpty() ? 1 : 0;
     }
 

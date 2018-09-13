@@ -23,7 +23,7 @@ allprojects {
 **2. 添加项目依赖**
 ``` gradle
 dependencies {
-        implementation 'com.github.Othershe:RecyclerViewAdapter:1.2.5'
+        implementation 'com.github.SheHuan:RecyclerViewAdapter:1.2.6'
 }
 ```
 
@@ -187,12 +187,19 @@ mAdapter.reset();
 ```
 #### 4、更新列表的相关方法
 ```java
-// 新data插入到原data的尾部
+// 新data插入到原data的尾部（为加载更多封装的方法）
 mAdapter.setLoadMoreData(data);
 
-// 新data直接替换原data
+// 新data直接替换原data（为加载更多封装的方法）
 mAdapter.setNewData(data);
 
-// 新data插入到原data头部
-mAdapter.setData(data);
+// 通用插入数据
+mAdapter.insert()
+
+// 通用删除数据
+mAdapter.remove()
+
+// 通用更新数据
+mAdapter.change()
+
 ```

@@ -12,8 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.othershe.baseadapter.interfaces.OnItemClickListener;
-import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
 import com.othershe.baseadapter.ViewHolder;
+import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,14 +63,14 @@ public class CommonItemActivity extends AppCompatActivity {
             }
         });
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        WrapLinearLayoutManager layoutManager = new WrapLinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mAdapter);
 
 
-        //延时3s刷新列表
+        //延时2s刷新列表
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

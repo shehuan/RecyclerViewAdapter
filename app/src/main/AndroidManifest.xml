@@ -15,11 +15,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".CommonItemActivity" />
         <activity android:name=".MultiItemActivity" />
         <activity android:name=".InitLoadActivity" />
         <activity android:name=".GridListActivity" />
+        <activity android:name=".IRCTestActivity"></activity>
     </application>
 
 </manifest>

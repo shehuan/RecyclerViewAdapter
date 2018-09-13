@@ -8,26 +8,37 @@
     tools:context="com.othershe.recyclerviewadapter.MainActivity">
 
     <Button
+        android:id="@+id/button0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="button0"
+        android:text="单Item布局" />
+
+    <Button
         android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="单Item布局" />
+        android:onClick="button1"
+        android:text="多Item布局" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="多Item布局" />
+        android:onClick="button2"
+        android:text="模拟初次加载失败" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="模拟初次加载失败" />
+        android:onClick="button3"
+        android:text="GridLayout型列表" />
 
     <Button
         android:id="@+id/button4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="GridLayout型列表" />
+        android:onClick="button4"
+        android:text="添加、删除、更新测试" />
 </LinearLayout>
