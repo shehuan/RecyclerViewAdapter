@@ -36,8 +36,8 @@ public class CommonItemActivity extends AppCompatActivity {
         mAdapter = new CommonRefreshAdapter(this, null, true);
 
         //初始化EmptyView
-        View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);
-        mAdapter.setEmptyView(emptyView);
+//        View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_layout, (ViewGroup) mRecyclerView.getParent(), false);
+//        mAdapter.setEmptyView(emptyView);
 
         //初始化 开始加载更多的loading View
         mAdapter.setLoadingView(R.layout.load_loading_layout);
@@ -75,20 +75,36 @@ public class CommonItemActivity extends AppCompatActivity {
             @Override
             public void run() {
                 List<String> data = new ArrayList<>();
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 20; i++) {
                     data.add("item--" + i);
                 }
                 //刷新数据
                 mAdapter.setNewData(data);
 
-                TextView t1 = new TextView(CommonItemActivity.this);
-                t1.setText("我是header-1");
-                mAdapter.addHeaderView(t1);
-                TextView t2 = new TextView(CommonItemActivity.this);
-                t2.setText("我是header-2");
-                mAdapter.addHeaderView(t2);
+//                TextView t1 = new TextView(CommonItemActivity.this);
+//                t1.setText("我是header-1");
+//                mAdapter.addHeaderView(t1);
+//                TextView t2 = new TextView(CommonItemActivity.this);
+//                t2.setText("我是header-2");
+//                mAdapter.addHeaderView(t2);
             }
-        }, 2000);
+        }, 1000);
+    }
+
+    public void shuaxin(View view){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.reset();
+                List<String> data = new ArrayList<>();
+                for (int i = 0; i < 20; i++) {
+                    data.add("item--" + i);
+                }
+                //刷新数据
+                mAdapter.setNewData(data);
+                Toast.makeText(CommonItemActivity.this, "刷新成功", Toast.LENGTH_SHORT).show();
+            }
+        }, 1000);
     }
 
 
@@ -101,7 +117,7 @@ public class CommonItemActivity extends AppCompatActivity {
                 if (mAdapter.getItemCount() >= 10 && isFailed) {
                     isFailed = false;
                     mAdapter.loadFailed();
-                } else if (mAdapter.getItemCount() >= 20) {
+                } else if (mAdapter.getItemCount() >= 40) {
                     mAdapter.loadEnd();
                 } else {
                     final List<String> data = new ArrayList<>();
