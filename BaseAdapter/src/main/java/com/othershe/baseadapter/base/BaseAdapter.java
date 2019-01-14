@@ -278,7 +278,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (isReset) {
             return;
         }
-        if (!isLoading){
+        if (!isLoading && isAutoLoadMoreEnd){
             addFooterView(mLoadingView);
         }
         if (mFooterLayout.getChildAt(0) == mLoadingView && !isLoading) {
@@ -526,12 +526,12 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * 重置adapter，恢复到初始状态
      */
     public void reset() {
-//        if (mLoadingView != null) {
-//            addFooterView(mLoadingView);
-//        }
+        if (mLoadingView != null && !isAutoLoadMoreEnd) {
+            addFooterView(mLoadingView);
+        }
         isLoading = false;
         isReset = true;
-        isAutoLoadMoreEnd = false;
+//        isAutoLoadMoreEnd = false;
         mDatas.clear();
     }
 

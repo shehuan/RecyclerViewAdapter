@@ -88,7 +88,7 @@ public class CommonItemActivity extends AppCompatActivity {
 //                t2.setText("我是header-2");
 //                mAdapter.addHeaderView(t2);
             }
-        }, 1000);
+        }, 100);
     }
 
     public void shuaxin(View view){
@@ -104,7 +104,7 @@ public class CommonItemActivity extends AppCompatActivity {
                 mAdapter.setNewData(data);
                 Toast.makeText(CommonItemActivity.this, "刷新成功", Toast.LENGTH_SHORT).show();
             }
-        }, 1000);
+        }, 100);
     }
 
 
@@ -128,6 +128,6 @@ public class CommonItemActivity extends AppCompatActivity {
                     mAdapter.setLoadMoreData(data);
                 }
             }
-        }, 2000);
+        }, 100);
     }
 }
