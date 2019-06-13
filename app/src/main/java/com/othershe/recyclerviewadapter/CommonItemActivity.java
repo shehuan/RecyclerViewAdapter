@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.othershe.baseadapter.interfaces.OnItemClickListener;
 import com.othershe.baseadapter.ViewHolder;
+import com.othershe.baseadapter.interfaces.OnItemLongClickListener;
 import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
 
 import java.util.ArrayList;
@@ -63,6 +64,13 @@ public class CommonItemActivity extends AppCompatActivity {
             }
         });
 
+        mAdapter.setOnItemLongClickListener(new OnItemLongClickListener<String>() {
+            @Override
+            public void onItemLongClick(ViewHolder viewHolder, String data, int position) {
+                Toast.makeText(CommonItemActivity.this, "长按事件", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         WrapLinearLayoutManager layoutManager = new WrapLinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -91,7 +99,7 @@ public class CommonItemActivity extends AppCompatActivity {
         }, 100);
     }
 
-    public void shuaxin(View view){
+    public void shuaxin(View view) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

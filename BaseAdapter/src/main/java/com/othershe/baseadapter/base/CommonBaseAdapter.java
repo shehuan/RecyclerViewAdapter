@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.othershe.baseadapter.ViewHolder;
 import com.othershe.baseadapter.interfaces.OnItemChildClickListener;
 import com.othershe.baseadapter.interfaces.OnItemClickListener;
+import com.othershe.baseadapter.interfaces.OnItemLongClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
     private OnItemClickListener<T> mItemClickListener;
+    private OnItemLongClickListener<T> mItemLongClickListener;
 
     private ArrayList<Integer> mItemChildIds = new ArrayList<>();
     private ArrayList<OnItemChildClickListener<T>> mItemChildListeners = new ArrayList<>();
@@ -61,6 +63,16 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
             }
         });
 
+        viewHolder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (mItemLongClickListener != null) {
+                    mItemLongClickListener.onItemLongClick(viewHolder, getAllData().get(position), position);
+                }
+                return true;
+            }
+        });
+
         for (int i = 0; i < mItemChildIds.size(); i++) {
             final int tempI = i;
             if (viewHolder.getConvertView().findViewById(mItemChildIds.get(i)) != null) {
@@ -81,6 +93,10 @@ public abstract class CommonBaseAdapter<T> extends BaseAdapter<T> {
 
     public void setOnItemClickListener(OnItemClickListener<T> itemClickListener) {
         mItemClickListener = itemClickListener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener<T> itemLongClickListener) {
+        mItemLongClickListener = itemLongClickListener;
     }
 
     public void setOnItemChildClickListener(int viewId, OnItemChildClickListener<T> itemChildClickListener) {

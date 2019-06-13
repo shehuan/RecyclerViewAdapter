@@ -23,7 +23,7 @@ allprojects {
 **2. 添加项目依赖**
 ``` gradle
 dependencies {
-        implementation 'com.github.SheHuan:RecyclerViewAdapter:1.2.6'
+        implementation 'com.github.SheHuan:RecyclerViewAdapter:1.2.9'
 }
 ```
 
